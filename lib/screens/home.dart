@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medicare/styles/colors.dart';
-import 'package:medicare/tabs/Category_Doctors.dart';
 import 'package:medicare/tabs/HomeTab.dart';
 import 'package:medicare/tabs/Messages.dart';
 import 'package:medicare/tabs/clinicsAppointment.dart';
@@ -18,7 +17,6 @@ List<Map> navigationBarItems = [
   {'icon': Icons.calendar_today, 'index': 1},
   {'icon': Icons.cabin_outlined, 'index': 2},
   {'icon': Icons.message, 'index': 3},
-  {'icon': Icons.category_outlined, 'index': 4},
 ];
 
 class _HomeState extends State<Home> {
@@ -46,7 +44,6 @@ class _HomeState extends State<Home> {
       ScheduleTabClinics(),
       ScheduleTabDoctors(),
       MessagesTab(),
-      CategoryDoctors(),
     ];
 
     return Scaffold(
