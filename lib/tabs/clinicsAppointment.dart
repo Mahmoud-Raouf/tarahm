@@ -146,15 +146,15 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  // Text(
-                                  //   _schedule['doctorTitle'],
-                                  //   style: TextStyle(
-                                  //     color: Color(MyColors.grey02),
-                                  //     fontSize: 12,
-                                  //     fontWeight: FontWeight.w600,
-                                  //   ),
-                                  //   textAlign: TextAlign.right,
-                                  // ),
+                                  Text(
+                                    _schedule['doctorTitle'],
+                                    style: TextStyle(
+                                      color: Color(MyColors.grey02),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
                                 ],
                               ),
                               SizedBox(
