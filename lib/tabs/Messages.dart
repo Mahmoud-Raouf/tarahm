@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/screens/chatDetailPage.dart';
 import 'package:medicare/styles/colors.dart';
 
 class MessagesTab extends StatefulWidget {
@@ -112,13 +113,27 @@ class _MessagesTabState extends State<MessagesTab> {
                                 }
                               });
                             },
-                            child: Center(
-                              child: Text(
-                                "رسائلك",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(MyColors.yellow02)),
-                              ),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Scaffold.of(context).openDrawer();
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/person.jpg'),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 100,
+                                ),
+                                Text(
+                                  "رسائلك",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(MyColors.yellow02)),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -209,7 +224,12 @@ class _MessagesTabState extends State<MessagesTab> {
                               Expanded(
                                 child: OutlinedButton(
                                   child: Text('رد'),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ChatDetailPage();
+                                    }));
+                                  },
                                 ),
                               ),
                               SizedBox(

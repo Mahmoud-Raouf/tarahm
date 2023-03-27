@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/tabs/HomeTab.dart';
 import 'package:medicare/tabs/Messages.dart';
@@ -47,6 +48,7 @@ class _HomeState extends State<Home> {
     ];
 
     return Scaffold(
+      drawer: const NavBar(),
       appBar: AppBar(
         backgroundColor: Color(MyColors.primary),
         elevation: 0,

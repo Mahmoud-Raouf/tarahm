@@ -79,11 +79,25 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                 }
                               });
                             },
-                            child: Center(
-                              child: Text("حجز عيادة",
-                                  style: TextStyle(
-                                      color: Color(MyColors.header01),
-                                      fontWeight: FontWeight.w800)),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Scaffold.of(context).openDrawer();
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/person.jpg'),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 100,
+                                ),
+                                Text("طلب إستشارة",
+                                    style: TextStyle(
+                                        color: Color(MyColors.header01),
+                                        fontWeight: FontWeight.w800)),
+                              ],
                             ),
                           ),
                         ),

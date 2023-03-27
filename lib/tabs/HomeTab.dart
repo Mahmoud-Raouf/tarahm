@@ -431,8 +431,13 @@ class UserIntro extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CircleAvatar(
-          backgroundImage: AssetImage('assets/person.jpg'),
+        InkWell(
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: CircleAvatar(
+            backgroundImage: AssetImage('assets/person.jpg'),
+          ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
