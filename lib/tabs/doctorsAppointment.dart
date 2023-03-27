@@ -60,7 +60,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 40,
+                  height: 41,
                   decoration: BoxDecoration(
                     color: Color(MyColors.bg),
                     borderRadius: BorderRadius.circular(20),
