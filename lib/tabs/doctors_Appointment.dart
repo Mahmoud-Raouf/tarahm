@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:medicare/styles/colors.dart';
 
-class ScheduleTabClinics extends StatefulWidget {
-  const ScheduleTabClinics({Key? key}) : super(key: key);
+class ScheduleTabDoctors extends StatefulWidget {
+  const ScheduleTabDoctors({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleTabClinics> createState() => _ScheduleTabClinicsState();
+  State<ScheduleTabDoctors> createState() => _ScheduleTabDoctorsState();
 }
 
 enum FilterStatus {
@@ -14,38 +14,38 @@ enum FilterStatus {
 
 List<Map> schedules = [
   {
-    'img': 'assets/clinics/clinics1.jpg',
-    'doctorName': 'عيادة. بيطرية ',
-    'reservedDate': 'الاحد والثلاثاء والاربعاء',
+    'img': 'assets/doctors/doctor03.jpeg',
+    'doctorName': 'د. فهد العتيبي',
+    'numberPhone': '0521321543',
     'status': FilterStatus.Upcoming,
   },
   {
-    'img': 'assets/clinics/clinics2.jpg',
-    'doctorName': 'عيادة. دليل العيادات البيطرية',
-    'reservedDate': 'طوال ايام الاسبوع',
+    'img': 'assets/doctors/doctor02.png',
+    'doctorName': 'د. على مرزوق',
+    'numberPhone': '0512123231',
     'status': FilterStatus.Upcoming,
   },
   {
-    'img': 'assets/clinics/clinics3.jpg',
-    'doctorName': 'عيادة. بيت كلينك',
-    'reservedDate': 'السبت والاربعاء',
+    'img': 'assets/doctors/doctor04.jpeg',
+    'doctorName': 'د. سحر ماجد',
+    'numberPhone': '0520999983',
     'status': FilterStatus.Upcoming,
   },
   {
-    'img': 'assets/clinics/clinics4.png',
-    'doctorName': 'عيادة. مركز الرعاية البيطري',
-    'reservedDate': 'الاثنين والخميس',
+    'img': 'assets/doctors/doctor04.jpeg',
+    'doctorName': 'د. أحلام المطيري',
+    'numberPhone': '0521534233',
     'status': FilterStatus.Upcoming,
   },
   {
-    'img': 'assets/clinics/clinics5.jpg',
-    'doctorName': 'عيادة. فيت كلينك',
-    'reservedDate': 'طوال ايام الاسبوع عدا الجمعه',
+    'img': 'assets/doctors/doctor01.jpeg',
+    'doctorName': 'د. سعيد عبدالله',
+    'numberPhone': '0521321543',
     'status': FilterStatus.Upcoming,
   },
 ];
 
-class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
+class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
   FilterStatus status = FilterStatus.Upcoming;
   Alignment _alignment = Alignment.centerLeft;
 
@@ -65,7 +65,7 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 40,
+                  height: 41,
                   decoration: BoxDecoration(
                     color: Color(MyColors.bg),
                     borderRadius: BorderRadius.circular(20),
@@ -84,25 +84,27 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                 }
                               });
                             },
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Scaffold.of(context).openDrawer();
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/person.jpg'),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Scaffold.of(context).openDrawer();
+                                    },
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/person.jpg'),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                ),
-                                Text("حجز عيادة",
-                                    style: TextStyle(
-                                        color: Color(MyColors.header01),
-                                        fontWeight: FontWeight.w800)),
-                              ],
+                                  Spacer(),
+                                  Text("طلب إستشارة",
+                                      style: TextStyle(
+                                          color: Color(MyColors.header01),
+                                          fontWeight: FontWeight.w800)),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -130,10 +132,14 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(_schedule['img']),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
                                     _schedule['doctorName'],
@@ -146,32 +152,18 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  Text(
-                                    _schedule['doctorTitle'],
-                                    style: TextStyle(
-                                      color: Color(MyColors.grey02),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.right,
-                                  ),
                                 ],
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              CircleAvatar(
-                                backgroundImage: AssetImage(_schedule['img']),
                               ),
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(right: 60),
+                            padding: const EdgeInsets.only(right: 30),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'مواعيد العمل : ${_schedule['reservedDate']}',
+                                  'رقم الهاتف : ${_schedule['numberPhone']}',
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     fontSize: 12,
@@ -179,20 +171,19 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                   ),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text(
-                                      '50 - 4.0 تقييم',
-                                      style: TextStyle(
-                                          color: Color(MyColors.grey02)),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
                                     Icon(
                                       Icons.star,
                                       color: Color(MyColors.yellow02),
                                       size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '50 - 4.0 تقييم',
+                                      style: TextStyle(
+                                          color: Color(MyColors.grey02)),
                                     ),
                                   ],
                                 )
@@ -204,9 +195,9 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Color(MyColors.text01),
+                              primary: Color(MyColors.kprimaryButtonsColor),
                             ),
-                            child: Text('حجز موعد'),
+                            child: Text('طلب استشارة'),
                             onPressed: () => {},
                           )
                         ],

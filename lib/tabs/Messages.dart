@@ -113,27 +113,29 @@ class _MessagesTabState extends State<MessagesTab> {
                                 }
                               });
                             },
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Scaffold.of(context).openDrawer();
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/person.jpg'),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Scaffold.of(context).openDrawer();
+                                    },
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/person.jpg'),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                ),
-                                Text(
-                                  "رسائلك",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Color(MyColors.yellow02)),
-                                ),
-                              ],
+                                  Spacer(),
+                                  Text(
+                                    "رسائلك",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Color(MyColors.yellow02)),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -161,10 +163,14 @@ class _MessagesTabState extends State<MessagesTab> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(_schedule['img']),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
                                     _schedule['doctorName'],
@@ -187,12 +193,6 @@ class _MessagesTabState extends State<MessagesTab> {
                                     textAlign: TextAlign.right,
                                   ),
                                 ],
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              CircleAvatar(
-                                backgroundImage: AssetImage(_schedule['img']),
                               ),
                             ],
                           ),

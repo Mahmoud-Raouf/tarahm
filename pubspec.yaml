@@ -26,6 +26,7 @@ flutter:
     - assets/
     - assets/doctors/
     - assets/clinics/
+    - assets/admin/
 
   fonts:
     - family: Cairo

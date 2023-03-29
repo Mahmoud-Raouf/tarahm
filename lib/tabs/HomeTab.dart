@@ -91,24 +91,9 @@ class HomeTab extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  child: Text(
-                    'المزيد',
-                    style: TextStyle(
-                      color: Color(MyColors.yellow01),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: () {},
-                ),
-                Text(
-                  'تصفح خدمتك',
-                  style: kTitleStyle,
-                ),
-              ],
+            Text(
+              'تصفح خدمتك',
+              style: kTitleStyle,
             ),
             SizedBox(
               height: 20,
@@ -382,40 +367,43 @@ class SearchInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Color(MyColors.bg),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Icon(
-              Icons.search,
-              color: Color(MyColors.purple02),
-            ),
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          Expanded(
-            child: TextField(
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'إبحث عن دكتورك المناسب',
-                hintStyle: TextStyle(
-                    fontSize: 13,
-                    color: Color(MyColors.purple01),
-                    fontWeight: FontWeight.w700),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Color(MyColors.bg),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 3),
+              child: Icon(
+                Icons.search,
+                color: Color(MyColors.purple02),
               ),
             ),
-          ),
-        ],
+            const SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: TextField(
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'إبحث عن دكتورك المناسب',
+                  hintStyle: TextStyle(
+                      fontSize: 13,
+                      color: Color(MyColors.purple01),
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -440,15 +428,15 @@ class UserIntro extends StatelessWidget {
           ),
         ),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: const [
             Text(
               'مرحبا بك',
               style: TextStyle(fontWeight: FontWeight.w500),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.center,
             ),
             Text(
-              '👋 محمود رؤف ',
+              ' محمود رؤف ',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],

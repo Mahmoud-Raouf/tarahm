@@ -1,53 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/styles/colors.dart';
 
-class ScheduleTabDoctors extends StatefulWidget {
-  const ScheduleTabDoctors({Key? key}) : super(key: key);
+class ScheduleTabClinics extends StatefulWidget {
+  const ScheduleTabClinics({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleTabDoctors> createState() => _ScheduleTabDoctorsState();
+  State<ScheduleTabClinics> createState() => _ScheduleTabClinicsState();
 }
 
-enum FilterStatus {
-  Upcoming,
-}
-
-List<Map> schedules = [
-  {
-    'img': 'assets/doctors/doctor03.jpeg',
-    'doctorName': 'د. فهد العتيبي',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor02.png',
-    'doctorName': 'د. على مرزوق',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. سحر ماجد',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. أحلام المطيري',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor01.jpeg',
-    'doctorName': 'د. سعيد عبدالله',
-    'status': FilterStatus.Upcoming,
-  },
-];
-
-class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
-  FilterStatus status = FilterStatus.Upcoming;
-  Alignment _alignment = Alignment.centerLeft;
+class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
+  final Alignment _alignment = Alignment.centerLeft;
 
   @override
   Widget build(BuildContext context) {
     List<Map> filteredSchedules = schedules.where((var schedule) {
-      return schedule['status'] == status;
+      return schedule['request'] == true;
     }).toList();
 
     return Scaffold(
@@ -60,7 +28,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 41,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Color(MyColors.bg),
                     borderRadius: BorderRadius.circular(20),
@@ -68,17 +36,11 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      for (FilterStatus filterStatus in FilterStatus.values)
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (filterStatus == FilterStatus.Upcoming) {
-                                  status = FilterStatus.Upcoming;
-                                  _alignment = Alignment.centerLeft;
-                                }
-                              });
-                            },
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Row(
                               children: [
                                 InkWell(
@@ -90,10 +52,8 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                         AssetImage('assets/person.jpg'),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 100,
-                                ),
-                                Text("طلب إستشارة",
+                                Spacer(),
+                                Text("حجز عيادة",
                                     style: TextStyle(
                                         color: Color(MyColors.header01),
                                         fontWeight: FontWeight.w800)),
@@ -101,6 +61,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                             ),
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -125,82 +86,70 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(_schedule['img']),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    _schedule['doctorName'],
+                                    _schedule['clinicName'],
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Color(MyColors.header01),
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  // Text(
-                                  //   _schedule['doctorTitle'],
-                                  //   style: TextStyle(
-                                  //     color: Color(MyColors.grey02),
-                                  //     fontSize: 12,
-                                  //     fontWeight: FontWeight.w600,
-                                  //   ),
-                                  //   textAlign: TextAlign.right,
-                                  // ),
                                 ],
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              CircleAvatar(
-                                backgroundImage: AssetImage(_schedule['img']),
                               ),
                             ],
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                'مواعيد العمل : ${_schedule['reservedDate']}',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black54,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'مواعيد العمل : ${_schedule['reservedDate']}',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 55),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      '50 - 4.0 تقييم',
-                                      style: TextStyle(
-                                          color: Color(MyColors.grey02)),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
                                     Icon(
                                       Icons.star,
                                       color: Color(MyColors.yellow02),
                                       size: 18,
                                     ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '50 - 4.0 تقييم',
+                                      style: TextStyle(
+                                          color: Color(MyColors.grey02)),
+                                    ),
                                   ],
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: 15,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Color(MyColors.kprimaryButtonsColor),
+                              primary: Color(MyColors.text01),
                             ),
-                            child: Text('طلب استشارة'),
+                            child: Text('حجز موعد'),
                             onPressed: () => {},
                           )
                         ],
