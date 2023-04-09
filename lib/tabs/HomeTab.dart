@@ -81,9 +81,9 @@ class HomeTab extends StatelessWidget {
             ),
             UserIntro(),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
-            SearchInput(),
+            // SearchInput(),
             SizedBox(
               height: 20,
             ),
@@ -360,54 +360,51 @@ class CategoryIcon extends StatelessWidget {
   }
 }
 
-class SearchInput extends StatelessWidget {
-  const SearchInput({
-    Key? key,
-  }) : super(key: key);
+// class SearchInput extends StatelessWidget {
+//   const SearchInput({
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(MyColors.bg),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Icon(
-                Icons.search,
-                color: Color(MyColors.purple02),
-              ),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: TextField(
-                textAlign: TextAlign.right,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'إبحث عن دكتورك المناسب',
-                  hintStyle: TextStyle(
-                      fontSize: 13,
-                      color: Color(MyColors.purple01),
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       decoration: BoxDecoration(
+//         color: Color(MyColors.bg),
+//         borderRadius: BorderRadius.circular(5),
+//       ),
+//       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.center,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.only(top: 3),
+//             child: Icon(
+//               Icons.search,
+//               color: Color(MyColors.purple02),
+//             ),
+//           ),
+//           const SizedBox(
+//             width: 15,
+//           ),
+//           Expanded(
+//             child: TextField(
+//               textAlign: TextAlign.right,
+//               decoration: InputDecoration(
+//                 border: InputBorder.none,
+//                 hintText: 'إبحث عن دكتورك المناسب',
+//                 hintStyle: TextStyle(
+//                     fontSize: 13,
+//                     color: Color(MyColors.purple01),
+//                     fontWeight: FontWeight.w700),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class UserIntro extends StatelessWidget {
   const UserIntro({

@@ -17,30 +17,35 @@ List<Map> schedules = [
     'img': 'assets/doctors/doctor03.jpeg',
     'doctorName': 'د. فهد العتيبي',
     'numberPhone': '0521321543',
+    'address': 'الرياض',
     'status': FilterStatus.Upcoming,
   },
   {
     'img': 'assets/doctors/doctor02.png',
     'doctorName': 'د. على مرزوق',
     'numberPhone': '0512123231',
+    'address': 'الرياض',
     'status': FilterStatus.Upcoming,
   },
   {
     'img': 'assets/doctors/doctor04.jpeg',
     'doctorName': 'د. سحر ماجد',
     'numberPhone': '0520999983',
+    'address': 'الرياض',
     'status': FilterStatus.Upcoming,
   },
   {
     'img': 'assets/doctors/doctor04.jpeg',
     'doctorName': 'د. أحلام المطيري',
     'numberPhone': '0521534233',
+    'address': 'الرياض',
     'status': FilterStatus.Upcoming,
   },
   {
     'img': 'assets/doctors/doctor01.jpeg',
     'doctorName': 'د. سعيد عبدالله',
     'numberPhone': '0521321543',
+    'address': 'الرياض',
     'status': FilterStatus.Upcoming,
   },
 ];
@@ -163,7 +168,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'رقم الهاتف : ${_schedule['numberPhone']}',
+                                  'عنوان الطبيب : ${_schedule['address']}',
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     fontSize: 12,

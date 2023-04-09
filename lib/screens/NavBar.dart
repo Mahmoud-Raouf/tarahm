@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medicare/screens/home.dart';
-import 'package:medicare/tabs/admin_clinics_requests.dart';
-import 'package:medicare/tabs/admin_doctor_requests.dart';
+import 'package:medicare/tabs/clinics/admin_clinics_requests.dart';
+import 'package:medicare/tabs/doctors/admin_doctor_requests.dart';
+import 'package:medicare/tabs/doctors/doctor_consultation_requests.dart';
 import 'package:medicare/tabs/users.dart';
 
 class NavBar extends StatefulWidget {
@@ -82,7 +83,9 @@ class _NavBarState extends State<NavBar> {
                   width: 30.0,
                   fit: BoxFit.cover,
                 ),
-                title: const Text('قبول الأطباء'),
+                title: const Text(
+                  'قبول الأطباء',
+                ),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -114,6 +117,28 @@ class _NavBarState extends State<NavBar> {
                   MaterialPageRoute(builder: (context) => const Users()),
                 ),
               ),
+              const Divider(),
+              ListTile(
+                title: const Text(
+                  'الطبيب',
+                ),
+              ),
+              ListTile(
+                leading: Image.asset(
+                  'assets/doctors/consulting_doctor.png',
+                  width: 30.0,
+                  fit: BoxFit.cover,
+                ),
+                title: const Text(
+                  'الإستشارات',
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DoctorConsultationRequests()),
+                ),
+              ),
+
               // const Divider(),
               // ListTile(
               //   leading: Image.asset(

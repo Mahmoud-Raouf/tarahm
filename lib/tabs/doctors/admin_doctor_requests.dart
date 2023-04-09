@@ -1,23 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 
-class ClinicsRequests extends StatefulWidget {
-  const ClinicsRequests({Key? key}) : super(key: key);
+class Adminrequests extends StatefulWidget {
+  const Adminrequests({Key? key}) : super(key: key);
 
   @override
-  State<ClinicsRequests> createState() => _ClinicsRequestsState();
+  State<Adminrequests> createState() => _AdminrequestsState();
 }
 
-class _ClinicsRequestsState extends State<ClinicsRequests> {
-  final Alignment _alignment = Alignment.centerLeft;
+enum FilterStatus {
+  Upcoming,
+}
+
+List<Map> schedules = [
+  {
+    'img': 'assets/doctors/doctor03.jpeg',
+    'doctorName': 'د. فهد العتيبي',
+    'numberPhone': '0521321543',
+    'address': 'الطائف',
+    'request': 'false',
+    'status': FilterStatus.Upcoming,
+  },
+  {
+    'img': 'assets/doctors/doctor02.png',
+    'doctorName': 'د. على مرزوق',
+    'numberPhone': '0512123231',
+    'address': 'تابوك',
+    'request': 'false',
+    'status': FilterStatus.Upcoming,
+  },
+  {
+    'img': 'assets/doctors/doctor04.jpeg',
+    'doctorName': 'د. سحر ماجد',
+    'numberPhone': '0520999983',
+    'address': 'جدة',
+    'request': 'false',
+    'status': FilterStatus.Upcoming,
+  },
+  {
+    'img': 'assets/doctors/doctor04.jpeg',
+    'doctorName': 'د. أحلام المطيري',
+    'numberPhone': '0521534233',
+    'address': 'مكة',
+    'request': 'false',
+    'status': FilterStatus.Upcoming,
+  },
+  {
+    'img': 'assets/doctors/doctor01.jpeg',
+    'doctorName': 'د. سعيد عبدالله',
+    'numberPhone': '0521321543',
+    'address': 'الرياض',
+    'request': 'false',
+    'status': FilterStatus.Upcoming,
+  },
+];
+
+class _AdminrequestsState extends State<Adminrequests> {
+  FilterStatus status = FilterStatus.Upcoming;
+  Alignment _alignment = Alignment.centerLeft;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     List<Map> filteredSchedules = schedules.where((var schedule) {
-      return schedule['request'] == false;
+      return schedule['status'] == status;
     }).toList();
 
     return SafeArea(
@@ -43,28 +90,40 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    scaffoldKey.currentState!.openDrawer();
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/person.jpg'),
-                                  ),
+                          for (FilterStatus filterStatus in FilterStatus.values)
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (filterStatus == FilterStatus.Upcoming) {
+                                      status = FilterStatus.Upcoming;
+                                      _alignment = Alignment.centerLeft;
+                                    }
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        scaffoldKey.currentState!.openDrawer();
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundImage:
+                                            AssetImage('assets/person.jpg'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 140,
+                                    ),
+                                    Text("طلبات الانضمام للأطباء",
+                                        style: TextStyle(
+                                            color: Color(
+                                                MyColors.kprimaryButtonsColor),
+                                            fontWeight: FontWeight.w800)),
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 140,
-                                ),
-                                Text("طلبات الانضمام للعيادات",
-                                    style: TextStyle(
-                                        color: Color(MyColors.header01),
-                                        fontWeight: FontWeight.w800)),
-                              ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -101,7 +160,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                   Column(
                                     children: [
                                       Text(
-                                        _schedule['clinicName'],
+                                        _schedule['doctorName'],
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
                                           color: Color(MyColors.header01),
@@ -127,7 +186,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                       ),
                                     ),
                                     Text(
-                                      'عنوان العيادة:  ${_schedule['address']}',
+                                      'عنوان الطبيب:  ${_schedule['address']}',
                                       style: TextStyle(
                                           color: Color(MyColors.grey02)),
                                     )
@@ -137,17 +196,32 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                               SizedBox(
                                 height: 15,
                               ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(MyColors.header01),
-                                ),
-                                child: Text('قبول الطلب'),
-                                onPressed: () {
-                                  setState(() {
-                                    _schedule['request'] == true;
-                                  });
-                                },
-                              )
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 140,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Color(MyColors.yellow01),
+                                      ),
+                                      child: Text('قبول '),
+                                      onPressed: () => {},
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 140,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.red[500],
+                                      ),
+                                      child: Text('رفض '),
+                                      onPressed: () => {},
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
