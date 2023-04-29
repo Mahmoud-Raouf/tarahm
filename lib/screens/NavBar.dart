@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/screens/home.dart';
+import 'package:medicare/screens/loginScreen.dart';
 import 'package:medicare/tabs/clinics/admin_clinics_requests.dart';
 import 'package:medicare/tabs/doctors/admin_doctor_requests.dart';
 import 'package:medicare/tabs/doctors/doctor_consultation_requests.dart';
@@ -167,13 +169,28 @@ class _NavBarState extends State<NavBar> {
               ),
 
               ListTile(
-                title: const Text('Exit'),
+                  title: const Text('تسجيل الدخول'),
+                  leading: Icon(
+                    Icons.login_outlined,
+                    size: 30.0,
+                  ),
+                  iconColor: Colors.green,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => loginScreen()),
+                    );
+                  }),
+              ListTile(
+                title: const Text('تسجيل الخروج'),
                 leading: Icon(
                   Icons.exit_to_app,
                   size: 30.0,
                 ),
                 iconColor: Colors.red,
-                onTap: () => Navigator.pop(context),
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                },
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/styles/styles.dart';
@@ -406,11 +407,17 @@ class CategoryIcon extends StatelessWidget {
 //   }
 // }
 
-class UserIntro extends StatelessWidget {
+class UserIntro extends StatefulWidget {
   const UserIntro({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<UserIntro> createState() => _UserIntroState();
+}
+
+class _UserIntroState extends State<UserIntro> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -426,14 +433,14 @@ class UserIntro extends StatelessWidget {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
+          children: [
             Text(
               'مرحبا بك',
               style: TextStyle(fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
             Text(
-              ' محمود رؤف ',
+              user.email!,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],

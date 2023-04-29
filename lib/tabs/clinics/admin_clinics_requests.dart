@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/screens/NavBar.dart';
@@ -13,6 +14,32 @@ class ClinicsRequests extends StatefulWidget {
 class _ClinicsRequestsState extends State<ClinicsRequests> {
   final Alignment _alignment = Alignment.centerLeft;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  // getData() async {
+  //   CollectionReference cliniclist =
+  //       FirebaseFirestore.instance.collection("clinics");
+  //   QuerySnapshot querySnapshot = await cliniclist.get();
+  //   List<QueryDocumentSnapshot> listDocs = querySnapshot.docs;
+
+  //   for (var element in listDocs) {
+  //     print(element.data()["title"]);
+  //   }
+  // }
+
+  getData() async {
+    CollectionReference cliniclist =
+        FirebaseFirestore.instance.collection("clinics");
+    await cliniclist.get().then((value) {
+      for (var element in value.docs) {
+        print(element.data()['title']);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
