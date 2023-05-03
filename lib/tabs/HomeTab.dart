@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/styles/styles.dart';
 import 'package:medicare/tabs/Category_Doctors.dart';
@@ -417,7 +417,17 @@ class UserIntro extends StatefulWidget {
 }
 
 class _UserIntroState extends State<UserIntro> {
-  final user = FirebaseAuth.instance.currentUser!;
+  String _name = '';
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUseData().then((name) {
+      setState(() {
+        _name = name;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -440,7 +450,7 @@ class _UserIntroState extends State<UserIntro> {
               textAlign: TextAlign.center,
             ),
             Text(
-              user.email!,
+              _name,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
@@ -60,6 +61,9 @@ class _AdminrequestsState extends State<Adminrequests> {
   FilterStatus status = FilterStatus.Upcoming;
   Alignment _alignment = Alignment.centerLeft;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Stream<QuerySnapshot> stream =
+      FirebaseFirestore.instance.collection('doctors').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -133,102 +137,133 @@ class _AdminrequestsState extends State<Adminrequests> {
                   height: 20,
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredSchedules.length,
-                    itemBuilder: (context, index) {
-                      var _schedule = filteredSchedules[index];
-                      bool isLastElement =
-                          filteredSchedules.length + 1 == index;
-                      return Card(
-                        margin: !isLastElement
-                            ? EdgeInsets.only(bottom: 20)
-                            : EdgeInsets.zero,
-                        child: Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage(_schedule['img']),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        _schedule['doctorName'],
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          color: Color(MyColors.header01),
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: stream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Map<String, dynamic> data =
+                                snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>;
+                            String name = data['name'];
+                            String numberPhone = data['number_phone'];
+                            String address = data['address'];
+                            String image = data['image'];
+
+                            return Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(15),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    Text(
-                                      'رقم الهاتف : ${_schedule['numberPhone']}',
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black54,
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          child: ClipOval(
+                                              child: Image.network(
+                                            image,
+                                            fit: BoxFit.cover,
+                                          )),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              name,
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                color: Color(MyColors.header01),
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'رقم الهاتف : $numberPhone',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          Text(
+                                            'عنوان العيادة:  $address',
+                                            style: TextStyle(
+                                                color: Color(MyColors.grey02)),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'عنوان الطبيب:  ${_schedule['address']}',
-                                      style: TextStyle(
-                                          color: Color(MyColors.grey02)),
-                                    )
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: 140,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Color(MyColors.yellow01),
+                                            ),
+                                            child: Text('قبول '),
+                                            onPressed: () => {},
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Colors.red[400],
+                                            ),
+                                            child: Text('رفض '),
+                                            onPressed: () => {},
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 140,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(MyColors.yellow01),
-                                      ),
-                                      child: Text('قبول '),
-                                      onPressed: () => {},
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 140,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.red[500],
-                                      ),
-                                      child: Text('رفض '),
-                                      onPressed: () => {},
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        Center(child: Text('لا يوجد عيادات'));
+                      }
+                      return Center(
+                        child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator()),
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),

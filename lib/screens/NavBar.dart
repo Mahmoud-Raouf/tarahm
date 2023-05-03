@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/screens/home.dart';
-import 'package:medicare/screens/loginScreen.dart';
+import 'package:medicare/auth/loginScreen.dart';
 import 'package:medicare/tabs/clinics/admin_clinics_requests.dart';
 import 'package:medicare/tabs/doctors/admin_doctor_requests.dart';
 import 'package:medicare/tabs/doctors/doctor_consultation_requests.dart';

@@ -1,49 +1,26 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medicare/screens/home.dart';
+import 'package:medicare/auth/signUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class SignUpScreen extends StatefulWidget {
+class loginScreen extends StatefulWidget {
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<loginScreen> createState() => _loginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  late bool errorvisible = false;
-
+class _loginScreenState extends State<loginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
-  Future signUp() async {
-    bool passwordConfirmed() {
-      if (_passwordController.text.trim() ==
-          _confirmPasswordController.text.trim()) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    if (passwordConfirmed()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      setState(() {
-        errorvisible = true;
-      });
-    }
+  Future signIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim());
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -64,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Stack(
                     children: <Widget>[
                       Positioned(
-                        top: 60,
+                        top: 50,
                         left: 20,
                         width: 100,
                         height: 200,
@@ -82,19 +59,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage("assets/images/dog.png"))),
+                                  image: AssetImage(
+                                      "assets/images/dog_rotate.png"))),
                         ),
                       ),
                       Positioned(
-                        top: 18,
                         left: 140,
-                        width: 80,
+                        width: 50,
                         height: 150,
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/dog_rotate.png"))),
+                                  image: AssetImage("assets/images/dog.png"))),
                         ),
                       ),
                       Positioned(
@@ -113,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           margin: EdgeInsets.only(top: 50),
                           child: Center(
                             child: Text(
-                              "إنشاء حساب",
+                              "تسجيل الدخول",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -126,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(30.0),
                   child: Column(
                     children: <Widget>[
                       Container(
@@ -159,9 +135,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(color: Colors.grey))),
                               child: TextField(
                                 controller: _passwordController,
                                 textAlign: TextAlign.right,
@@ -171,44 +144,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     hintStyle:
                                         TextStyle(color: Colors.grey[400])),
                               ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: _confirmPasswordController,
-                                textAlign: TextAlign.right,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "تأكيد الرقم السري",
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey[400])),
-                              ),
                             )
                           ],
                         ),
                       ),
                       SizedBox(
-                        height: 10,
-                      ),
-                      Visibility(
-                        visible: errorvisible,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "كلمة السر غير متطابقان",
-                              style: TextStyle(
-                                  color: Color.fromRGBO(209, 0, 0, 1)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
+                        height: 30,
                       ),
                       GestureDetector(
-                        onTap: signUp,
+                        onTap: signIn,
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
@@ -219,7 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ])),
                           child: Center(
                             child: Text(
-                              "إنشاء",
+                              "تسجيل دخول",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
@@ -228,9 +172,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 70,
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -239,9 +183,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           );
                         },
                         child: Text(
-                          " لديك حساب ؟",
+                          "نسيت كلمة المرور ؟",
                           style:
                               TextStyle(color: Color.fromRGBO(23, 128, 4, 1)),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                          );
+                        },
+                        child: Text(
+                          "ليس لديك حساب ؟",
+                          style: TextStyle(color: Color.fromRGBO(128, 4, 4, 1)),
                         ),
                       ),
                     ],
