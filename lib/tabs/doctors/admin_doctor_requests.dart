@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 
@@ -62,8 +63,33 @@ class _AdminrequestsState extends State<Adminrequests> {
   Alignment _alignment = Alignment.centerLeft;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Stream<QuerySnapshot> stream =
-      FirebaseFirestore.instance.collection('doctors').snapshots();
+  Stream<QuerySnapshot> stream = FirebaseFirestore.instance
+      .collection('doctors')
+      .where('doctors_acceptance', isEqualTo: false)
+      .snapshots();
+  String userId = "";
+
+  Future<void> updateDocumentRole() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('customUsers')
+        .where('uid', isEqualTo: userId)
+        .get();
+
+    await FirebaseFirestore.instance
+        .collection('customUsers')
+        .doc(snapshot.docs[0].id)
+        .update({'role': 'doctor'});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserUid().then((uid) {
+      setState(() {
+        userId = uid;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +185,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                             String numberPhone = data['number_phone'];
                             String address = data['address'];
                             String image = data['image'];
+                            String documentId = snapshot.data!.docs[index].id;
 
                             return Card(
                               child: Padding(
@@ -231,7 +258,23 @@ class _AdminrequestsState extends State<Adminrequests> {
                                               primary: Color(MyColors.yellow01),
                                             ),
                                             child: Text('قبول '),
-                                            onPressed: () => {},
+                                            onPressed: () {
+                                              Future doctorAccepted() async {
+                                                CollectionReference clinicsref =
+                                                    FirebaseFirestore.instance
+                                                        .collection('doctors');
+
+                                                clinicsref
+                                                    .doc(documentId)
+                                                    .update({
+                                                  'doctors_acceptance': true,
+                                                });
+
+                                                updateDocumentRole();
+                                              }
+
+                                              doctorAccepted();
+                                            },
                                           ),
                                         ),
                                         SizedBox(

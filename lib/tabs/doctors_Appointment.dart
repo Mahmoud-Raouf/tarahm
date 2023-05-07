@@ -57,7 +57,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
 
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
       .collection('doctors')
-      .where('clinic_acceptance', isEqualTo: true)
+      .where('doctors_acceptance', isEqualTo: true)
       .snapshots();
 
   @override
@@ -148,7 +148,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                         String name = data['name'];
                         String numberPhone = data['number_phone'];
                         String address = data['address'];
-                        String image = data['image'];
+                        // String image = data['image'];
 
                         return Card(
                           child: Padding(
@@ -158,13 +158,13 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                               children: [
                                 Row(
                                   children: [
-                                    CircleAvatar(
-                                      child: ClipOval(
-                                          child: Image.network(
-                                        image,
-                                        fit: BoxFit.cover,
-                                      )),
-                                    ),
+                                    // CircleAvatar(
+                                    //   child: ClipOval(
+                                    //       child: Image.network(
+                                    //     image,
+                                    //     fit: BoxFit.cover,
+                                    //   )),
+                                    // ),
                                     SizedBox(
                                       width: 10,
                                     ),

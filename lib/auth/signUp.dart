@@ -38,6 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "uid": result.user?.uid,
         'name': _nameController.text,
         'number': _numberphoneController.text,
+        'role': "user",
       });
       Navigator.push(
         context,

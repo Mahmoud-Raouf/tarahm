@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/styles/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ScheduleTabClinics extends StatefulWidget {
   const ScheduleTabClinics({Key? key}) : super(key: key);
@@ -12,18 +13,21 @@ class ScheduleTabClinics extends StatefulWidget {
 
 class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
   final Alignment _alignment = Alignment.centerLeft;
+  TextEditingController dateCtl = TextEditingController();
 
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
       .collection('clinics')
       .where('clinic_acceptance', isEqualTo: true)
       .snapshots();
+  DateTime? _selectedDate;
 
   @override
   Widget build(BuildContext context) {
     List<Map> filteredSchedules = schedules.where((var schedule) {
       return schedule['request'] == true;
     }).toList();
-
+    Size ksize = MediaQuery.of(context).size;
+    ScreenUtil.init(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 30, top: 30, right: 30),
@@ -106,7 +110,7 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                         String mytitle = data['title'];
                         String numberPhone = data['number_phone'];
                         String address = data['address'];
-                        String image = data['image'];
+                        // String image = data['image'];
 
                         return Card(
                           child: Padding(
@@ -116,13 +120,13 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                               children: [
                                 Row(
                                   children: [
-                                    CircleAvatar(
-                                      child: ClipOval(
-                                          child: Image.network(
-                                        image,
-                                        fit: BoxFit.cover,
-                                      )),
-                                    ),
+                                    // CircleAvatar(
+                                    //   child: ClipOval(
+                                    //       child: Image.network(
+                                    //     image,
+                                    //     fit: BoxFit.cover,
+                                    //   )),
+                                    // ),
                                     SizedBox(
                                       width: 10,
                                     ),
@@ -167,28 +171,32 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                   height: 15,
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     SizedBox(
-                                      width: 140,
+                                      width: 240,
                                       child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(MyColors.header01),
-                                        ),
-                                        child: Text('قبول '),
-                                        onPressed: () => {},
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 140,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.red[500],
-                                        ),
-                                        child: Text('رفض '),
-                                        onPressed: () => {},
-                                      ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Color(MyColors.header01),
+                                          ),
+                                          child: Text('حجز موعد'),
+                                          onPressed: () async {
+                                            // Show the date picker
+                                            DateTime? selectedDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2100),
+                                            );
+
+                                            // Update the selected date
+                                            setState(() {
+                                              _selectedDate =
+                                                  selectedDate ?? _selectedDate;
+                                            });
+                                            print(_selectedDate);
+                                          }),
                                     ),
                                   ],
                                 ),

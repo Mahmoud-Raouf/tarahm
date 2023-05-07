@@ -20,6 +20,22 @@ getCurrentUseData() async {
   return name;
 }
 
+Future<String> getAdminData() async {
+  final User user = _auth.currentUser!;
+  final uid = user.uid;
+  final CollectionReference documentReference =
+      FirebaseFirestore.instance.collection("customUsers");
+
+  final QuerySnapshot querySnapshot =
+      await documentReference.where("uid", isEqualTo: uid).get();
+
+// Get the first document from the query results
+  final DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+
+  final String rolename = documentSnapshot['role'];
+  return rolename;
+}
+
 getCurrentUserUid() async {
   final User user = _auth.currentUser!;
   final uid = user.uid;

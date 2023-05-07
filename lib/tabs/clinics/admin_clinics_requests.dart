@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
-
-import '../../controller/firebase_data.dart';
 
 class ClinicsRequests extends StatefulWidget {
   const ClinicsRequests({Key? key}) : super(key: key);
@@ -19,17 +18,33 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
 
   // final List data = getclinicData();
 
-  @override
-  void initState() {
-    getclinicData();
-    // getcliniccurrentUserData();
-    super.initState();
-  }
-
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
       .collection('clinics')
       .where('clinic_acceptance', isEqualTo: false)
       .snapshots();
+  String userId = "";
+
+  Future<void> updateDocumentRole() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('customUsers')
+        .where('uid', isEqualTo: userId)
+        .get();
+
+    await FirebaseFirestore.instance
+        .collection('customUsers')
+        .doc(snapshot.docs[0].id)
+        .update({'role': 'clinic'});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserUid().then((uid) {
+      setState(() {
+        userId = uid;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +127,8 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                             String mytitle = data['title'];
                             String numberPhone = data['number_phone'];
                             String address = data['address'];
-                            String image = data['image'];
+                            // String image = data['image'];
+                            String documentId = snapshot.data!.docs[index].id;
 
                             return Card(
                               child: Padding(
@@ -123,13 +139,13 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                   children: [
                                     Row(
                                       children: [
-                                        CircleAvatar(
-                                          child: ClipOval(
-                                              child: Image.network(
-                                            image,
-                                            fit: BoxFit.cover,
-                                          )),
-                                        ),
+                                        // CircleAvatar(
+                                        //   child: ClipOval(
+                                        //       child: Image.network(
+                                        //     image,
+                                        //     fit: BoxFit.cover,
+                                        //   )),
+                                        // ),
                                         SizedBox(
                                           width: 10,
                                         ),
@@ -185,7 +201,23 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                               primary: Color(MyColors.header01),
                                             ),
                                             child: Text('قبول '),
-                                            onPressed: () => {},
+                                            onPressed: () {
+                                              Future clinicAccepted() async {
+                                                CollectionReference clinicsref =
+                                                    FirebaseFirestore.instance
+                                                        .collection('clinics');
+
+                                                clinicsref
+                                                    .doc(documentId)
+                                                    .update({
+                                                  'clinic_acceptance': true,
+                                                });
+                                                updateDocumentRole();
+                                                print('userId $userId');
+                                              }
+
+                                              clinicAccepted();
+                                            },
                                           ),
                                         ),
                                         SizedBox(
