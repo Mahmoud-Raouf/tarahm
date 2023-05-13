@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/auth/loginScreen.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/forms/request_to_create_doctor.dart';
 import 'package:medicare/forms/request_to_establish_clinic.dart';
 import 'package:medicare/screens/home.dart';
 import 'package:medicare/tabs/clinics/admin_clinics_requests.dart';
+import 'package:medicare/tabs/clinics/customerAppointmentClinic.dart';
 import 'package:medicare/tabs/doctors/admin_doctor_requests.dart';
 import 'package:medicare/tabs/doctors/doctor_consultation_requests.dart';
 import 'package:medicare/tabs/users.dart';
@@ -18,10 +20,11 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   String _rolename = "";
+
   @override
   void initState() {
     super.initState();
-    getAdminData().then((rolename) {
+    getRoleCurrentUser().then((rolename) {
       setState(() {
         _rolename = rolename;
       });
@@ -162,7 +165,7 @@ class _NavBarState extends State<NavBar> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const DoctorConsultationRequests()),
+                                    const customerAppointmentClinic()),
                           ),
                         ),
                       ],
@@ -224,34 +227,43 @@ class _NavBarState extends State<NavBar> {
                 ),
               ),
 
-              ListTile(
-                  title: const Text('التقديم كعيادة'),
-                  leading: Icon(
-                    Icons.login_outlined,
-                    size: 30.0,
-                  ),
-                  iconColor: Colors.green,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RequestToEstablishClinic()),
-                    );
-                  }),
-              ListTile(
-                  title: const Text('التقديم كطبيب'),
-                  leading: Icon(
-                    Icons.login_outlined,
-                    size: 30.0,
-                  ),
-                  iconColor: Colors.green,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RequestToCreateDoctor()),
-                    );
-                  }),
+              _rolename == "user"
+                  ? Column(
+                      children: [
+                        ListTile(
+                            title: const Text('التقديم كعيادة'),
+                            leading: Icon(
+                              Icons.login_outlined,
+                              size: 30.0,
+                            ),
+                            iconColor: Colors.green,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        RequestToEstablishClinic()),
+                              );
+                            }),
+                        ListTile(
+                            title: const Text('التقديم كطبيب'),
+                            leading: Icon(
+                              Icons.login_outlined,
+                              size: 30.0,
+                            ),
+                            iconColor: Colors.green,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RequestToCreateDoctor(),
+                                ),
+                              );
+                            }),
+                      ],
+                    )
+                  : SizedBox(),
+
               ListTile(
                 title: const Text('تسجيل الخروج'),
                 leading: Icon(
@@ -261,6 +273,12 @@ class _NavBarState extends State<NavBar> {
                 iconColor: Colors.red,
                 onTap: () {
                   FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => loginScreen(),
+                    ),
+                  );
                 },
               ),
             ],

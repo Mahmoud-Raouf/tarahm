@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:medicare/models/clinicsData.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,20 +12,48 @@ class ScheduleTabClinics extends StatefulWidget {
 }
 
 class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
-  final Alignment _alignment = Alignment.centerLeft;
   TextEditingController dateCtl = TextEditingController();
+  static String? ClinicId;
+  static String? Useruid;
+
+  static Future<void> initialize() async {
+    ClinicId = await getclinicAppointmentsDocument();
+    getCurrentUseData();
+    getCurrentUserNumberPhone();
+  }
 
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
       .collection('clinics')
       .where('clinic_acceptance', isEqualTo: true)
       .snapshots();
+
   DateTime? _selectedDate;
+
+  String nameuser = "";
+  String numberuser = "";
+  String nuseruidame = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    getCurrentUseData().then((name) {
+      setState(() {
+        nameuser = name;
+      });
+    });
+    getCurrentUserNumberPhone().then((number) {
+      setState(() {
+        numberuser = number;
+      });
+    });
+    setState(() {
+      Useruid = currentUser.uid;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Map> filteredSchedules = schedules.where((var schedule) {
-      return schedule['request'] == true;
-    }).toList();
     Size ksize = MediaQuery.of(context).size;
     ScreenUtil.init(context);
     return Scaffold(
@@ -107,6 +135,7 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                       itemBuilder: (BuildContext context, int index) {
                         Map<String, dynamic> data = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
+                        String ClinicId = snapshot.data!.docs[index].id;
                         String mytitle = data['title'];
                         String numberPhone = data['number_phone'];
                         String address = data['address'];
@@ -177,7 +206,8 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                       width: 240,
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            primary: Color(MyColors.header01),
+                                            backgroundColor:
+                                                Color(MyColors.header01),
                                           ),
                                           child: Text('حجز موعد'),
                                           onPressed: () async {
@@ -189,11 +219,30 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                               firstDate: DateTime(2000),
                                               lastDate: DateTime(2100),
                                             );
+                                            Future
+                                                clinicAppointmentsAccepted() async {
+                                              CollectionReference
+                                                  mainCollectionRef =
+                                                  FirebaseFirestore.instance
+                                                      .collection('clinics')
+                                                      .doc(ClinicId)
+                                                      .collection(
+                                                          'clinicAppointments');
+
+                                              mainCollectionRef.add({
+                                                'acceptedDate': false,
+                                                'customerName': nameuser,
+                                                'date': _selectedDate,
+                                                'numberPhone': numberuser,
+                                                'presonbookingid': Useruid,
+                                              });
+                                            }
 
                                             // Update the selected date
                                             setState(() {
                                               _selectedDate =
                                                   selectedDate ?? _selectedDate;
+                                              clinicAppointmentsAccepted();
                                             });
                                             print(_selectedDate);
                                           }),

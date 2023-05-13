@@ -22,6 +22,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
       .collection('clinics')
       .where('clinic_acceptance', isEqualTo: false)
       .snapshots();
+
   String userId = "";
 
   Future<void> updateDocumentRole() async {

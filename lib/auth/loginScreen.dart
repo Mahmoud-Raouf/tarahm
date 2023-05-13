@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/auth/forget_password.dart';
 import 'package:medicare/auth/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -179,7 +180,7 @@ class _loginScreenState extends State<loginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUpScreen()),
+                                builder: (context) => ResetPasswordPage()),
                           );
                         },
                         child: Text(

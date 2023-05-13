@@ -20,7 +20,7 @@ getCurrentUseData() async {
   return name;
 }
 
-Future<String> getAdminData() async {
+Future<String> getRoleCurrentUser() async {
   final User user = _auth.currentUser!;
   final uid = user.uid;
   final CollectionReference documentReference =
@@ -34,6 +34,60 @@ Future<String> getAdminData() async {
 
   final String rolename = documentSnapshot['role'];
   return rolename;
+}
+
+Future<String> getCurrentUserNumberPhone() async {
+  final User user = _auth.currentUser!;
+  final uid = user.uid;
+  final CollectionReference documentReference =
+      FirebaseFirestore.instance.collection("customUsers");
+
+  final QuerySnapshot querySnapshot =
+      await documentReference.where("uid", isEqualTo: uid).get();
+
+  // Get the first document from the query results
+  final DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+
+  final String number = documentSnapshot['number'];
+
+  // Return a list containing the actual values of the variables
+  return number;
+}
+
+Future<String> getclinicAppointmentsDocument() async {
+  final User user = _auth.currentUser!;
+  final uid = user.uid;
+  final CollectionReference documentReference =
+      FirebaseFirestore.instance.collection("clinics");
+
+  final QuerySnapshot querySnapshot =
+      await documentReference.where("userId", isEqualTo: uid).get();
+
+  if (querySnapshot.docs.isEmpty) {
+    throw Exception("No documents found for user $uid");
+  }
+
+  final DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+  final String documentId = documentSnapshot.id;
+  return documentId;
+}
+
+Future<String> getdoctorConsultingDocument() async {
+  final User user = _auth.currentUser!;
+  final uid = user.uid;
+  final CollectionReference documentReference =
+      FirebaseFirestore.instance.collection("doctors");
+
+  final QuerySnapshot querySnapshot =
+      await documentReference.where("userId", isEqualTo: uid).get();
+
+  if (querySnapshot.docs.isEmpty) {
+    throw Exception("No documents found for user $uid");
+  }
+
+  final DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+  final String documentId = documentSnapshot.id;
+  return documentId;
 }
 
 getCurrentUserUid() async {

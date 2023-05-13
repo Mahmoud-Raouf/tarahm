@@ -62,9 +62,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map> filteredSchedules = schedules.where((var schedule) {
-      return schedule['status'] == status;
-    }).toList();
+
 
     return Scaffold(
       body: Padding(
@@ -222,7 +220,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                 ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary:
+                                    backgroundColor:
                                         Color(MyColors.kprimaryButtonsColor),
                                   ),
                                   child: Text('طلب استشارة'),

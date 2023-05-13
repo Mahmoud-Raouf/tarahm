@@ -2,83 +2,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/NavBar.dart';
+import 'package:intl/intl.dart';
 import 'package:medicare/styles/colors.dart';
+import 'dart:ui' as ui;
 
-class Adminrequests extends StatefulWidget {
-  const Adminrequests({Key? key}) : super(key: key);
+class customerAppointmentClinic extends StatefulWidget {
+  const customerAppointmentClinic({Key? key}) : super(key: key);
 
   @override
-  State<Adminrequests> createState() => _AdminrequestsState();
+  State<customerAppointmentClinic> createState() =>
+      _customerAppointmentClinicState();
 }
 
-enum FilterStatus {
-  Upcoming,
-}
-
-List<Map> schedules = [
-  {
-    'img': 'assets/doctors/doctor03.jpeg',
-    'doctorName': 'د. فهد العتيبي',
-    'numberPhone': '0521321543',
-    'address': 'الطائف',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor02.png',
-    'doctorName': 'د. على مرزوق',
-    'numberPhone': '0512123231',
-    'address': 'تابوك',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. سحر ماجد',
-    'numberPhone': '0520999983',
-    'address': 'جدة',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. أحلام المطيري',
-    'numberPhone': '0521534233',
-    'address': 'مكة',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor01.jpeg',
-    'doctorName': 'د. سعيد عبدالله',
-    'numberPhone': '0521321543',
-    'address': 'الرياض',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-];
-
-class _AdminrequestsState extends State<Adminrequests> {
-  FilterStatus status = FilterStatus.Upcoming;
+class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  DateTime now = DateTime.now();
 
-  Stream<QuerySnapshot> stream = FirebaseFirestore.instance
-      .collection('doctors')
-      .where('doctors_acceptance', isEqualTo: false)
-      .snapshots();
   String userId = "";
+  static String? documentId;
+
+  static Future<void> initialize() async {
+    documentId = await getclinicAppointmentsDocument();
+  }
 
   Future<void> updateDocumentRole() async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('customUsers')
+        .collection('clinics')
         .where('uid', isEqualTo: userId)
         .get();
 
     await FirebaseFirestore.instance
-        .collection('customUsers')
+        .collection('clinicAppointments')
         .doc(snapshot.docs[0].id)
-        .update({'role': 'doctor'});
+        .update({'role': 'clinic'});
   }
+
+  Stream<QuerySnapshot> stream = FirebaseFirestore.instance
+      .collection('clinics')
+      .doc(documentId)
+      .collection('clinicAppointments')
+      .snapshots();
 
   @override
   void initState() {
@@ -88,13 +51,23 @@ class _AdminrequestsState extends State<Adminrequests> {
         userId = uid;
       });
     });
+    getclinicAppointmentsDocument().then((id) {
+      setState(() {
+        documentId = id;
+        stream = FirebaseFirestore.instance
+            .collection('clinics')
+            .doc(documentId)
+            .collection('clinicAppointments')
+            .snapshots();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: ui.TextDirection.rtl,
         child: Scaffold(
           key: scaffoldKey,
           drawer: const NavBar(),
@@ -130,11 +103,12 @@ class _AdminrequestsState extends State<Adminrequests> {
                                 SizedBox(
                                   width: 140,
                                 ),
-                                Text("طلبات الانضمام للأطباء",
-                                    style: TextStyle(
-                                        color: Color(
-                                            MyColors.kprimaryButtonsColor),
-                                        fontWeight: FontWeight.w800)),
+                                Text(
+                                  " مواعد العملاء مع عيادتك",
+                                  style: TextStyle(
+                                      color: Color(MyColors.header01),
+                                      fontWeight: FontWeight.w800),
+                                ),
                               ],
                             ),
                           ),
@@ -165,11 +139,17 @@ class _AdminrequestsState extends State<Adminrequests> {
                             Map<String, dynamic> data =
                                 snapshot.data!.docs[index].data()
                                     as Map<String, dynamic>;
-                            String name = data['name'];
-                            String numberPhone = data['number_phone'];
-                            String address = data['address'];
-                            String image = data['image'];
-                            String documentId = snapshot.data!.docs[index].id;
+
+                            String AppointmentId =
+                                snapshot.data!.docs[index].id;
+                            DateTime now = data['date'].toDate();
+                            DateFormat formatter = DateFormat.yMd().add_jm();
+                            String formatted = formatter.format(now);
+                            String? customerName = data['customerName'];
+
+                            String? numberPhone = data['numberPhone'];
+                            bool acceptedDate = data['acceptedDate'];
+                            // String image = data['image'];
 
                             return Card(
                               child: Padding(
@@ -180,20 +160,20 @@ class _AdminrequestsState extends State<Adminrequests> {
                                   children: [
                                     Row(
                                       children: [
-                                        CircleAvatar(
-                                          child: ClipOval(
-                                              child: Image.network(
-                                            image,
-                                            fit: BoxFit.cover,
-                                          )),
-                                        ),
+                                        // CircleAvatar(
+                                        //   child: ClipOval(
+                                        //       child: Image.network(
+                                        //     image,
+                                        //     fit: BoxFit.cover,
+                                        //   )),
+                                        // ),
                                         SizedBox(
                                           width: 10,
                                         ),
                                         Column(
                                           children: [
                                             Text(
-                                              name,
+                                              "موعد الحجز المطلوب : $formatted",
                                               textAlign: TextAlign.right,
                                               style: TextStyle(
                                                 color: Color(MyColors.header01),
@@ -213,15 +193,20 @@ class _AdminrequestsState extends State<Adminrequests> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'رقم الهاتف : $numberPhone',
+                                            'الطلب مقدم من : $customerName',
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black54,
+                                              fontSize: 14,
+                                              color: Colors.black87,
                                             ),
                                           ),
                                           Text(
-                                            'عنوان العيادة:  $address',
+                                            'رقم الهاتف:  $numberPhone',
+                                            style: TextStyle(
+                                                color: Color(MyColors.grey02)),
+                                          ),
+                                          Text(
+                                            'id :  $AppointmentId',
                                             style: TextStyle(
                                                 color: Color(MyColors.grey02)),
                                           ),
@@ -231,49 +216,72 @@ class _AdminrequestsState extends State<Adminrequests> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                          width: 140,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Color(MyColors.yellow01),
+                                    acceptedDate == false
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: 140,
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: Color(
+                                                        MyColors.header01),
+                                                  ),
+                                                  child: Text('قبول '),
+                                                  onPressed: () {
+                                                    Future
+                                                        clinicAppointmentsAccepted() async {
+                                                      CollectionReference
+                                                          mainCollectionRef =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'clinics');
+                                                      DocumentReference
+                                                          documentRef =
+                                                          mainCollectionRef
+                                                              .doc(documentId)
+                                                              .collection(
+                                                                  'clinicAppointments')
+                                                              .doc(
+                                                                  AppointmentId);
+
+                                                      documentRef.update({
+                                                        'acceptedDate': true,
+                                                      });
+                                                    }
+
+                                                    clinicAppointmentsAccepted();
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 140,
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.red[500],
+                                                  ),
+                                                  child: Text('رفض '),
+                                                  onPressed: () {},
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            width: 140,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Color(MyColors.header01),
+                                              ),
+                                              child: Text('تم الحجز'),
+                                              onPressed: () {},
                                             ),
-                                            child: Text('قبول '),
-                                            onPressed: () {
-                                              Future doctorAccepted() async {
-                                                CollectionReference clinicsref =
-                                                    FirebaseFirestore.instance
-                                                        .collection('doctors');
-
-                                                clinicsref
-                                                    .doc(documentId)
-                                                    .update({
-                                                  'doctors_acceptance': true,
-                                                });
-
-                                                updateDocumentRole();
-                                              }
-
-                                              doctorAccepted();
-                                            },
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 140,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red[400],
-                                            ),
-                                            child: Text('رفض '),
-                                            onPressed: () => {},
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ),
