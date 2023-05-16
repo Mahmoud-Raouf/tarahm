@@ -193,6 +193,11 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                         style: TextStyle(
                                             color: Color(MyColors.grey02)),
                                       ),
+                                      Text(
+                                        'Id العيادة:  $ClinicId',
+                                        style: TextStyle(
+                                            color: Color(MyColors.grey02)),
+                                      ),
                                     ],
                                   ),
                                 ),

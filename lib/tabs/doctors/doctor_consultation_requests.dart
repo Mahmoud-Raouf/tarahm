@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
+import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/screens/chatDetailPage.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,8 @@ class DoctorConsultationRequests extends StatefulWidget {
 
 class _DoctorConsultationRequestsState
     extends State<DoctorConsultationRequests> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   static String? documentId;
 
   static Future<void> initialize() async {
@@ -46,11 +49,13 @@ class _DoctorConsultationRequestsState
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: ui.TextDirection.rtl,
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
+    return SafeArea(
+      child: Directionality(
+        textDirection: ui.TextDirection.rtl,
+        child: Scaffold(
+          key: scaffoldKey,
+          drawer: const NavBar(),
+          body: Padding(
             padding: const EdgeInsets.only(left: 30, top: 30, right: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,7 +80,7 @@ class _DoctorConsultationRequestsState
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      Scaffold.of(context).openDrawer();
+                                      scaffoldKey.currentState!.openDrawer();
                                     },
                                     child: CircleAvatar(
                                       backgroundImage:

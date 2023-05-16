@@ -25,18 +25,6 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
     documentId = await getclinicAppointmentsDocument();
   }
 
-  Future<void> updateDocumentRole() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('clinics')
-        .where('uid', isEqualTo: userId)
-        .get();
-
-    await FirebaseFirestore.instance
-        .collection('clinicAppointments')
-        .doc(snapshot.docs[0].id)
-        .update({'role': 'clinic'});
-  }
-
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
       .collection('clinics')
       .doc(documentId)
@@ -142,9 +130,11 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                             String AppointmentId =
                                 snapshot.data!.docs[index].id;
+
                             DateTime now = data['date'].toDate();
                             DateFormat formatter = DateFormat.yMd().add_jm();
                             String formatted = formatter.format(now);
+
                             String? customerName = data['customerName'];
 
                             String? numberPhone = data['numberPhone'];
@@ -266,7 +256,30 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                         Colors.red[500],
                                                   ),
                                                   child: Text('رفض '),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    Future
+                                                        clinicAppointmentsAccepted() async {
+                                                      CollectionReference
+                                                          mainCollectionRef =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'clinics');
+                                                      DocumentReference
+                                                          documentRef =
+                                                          mainCollectionRef
+                                                              .doc(documentId)
+                                                              .collection(
+                                                                  'clinicAppointments')
+                                                              .doc(
+                                                                  AppointmentId);
+
+                                                      await documentRef
+                                                          .delete();
+                                                    }
+
+                                                    clinicAppointmentsAccepted();
+                                                  },
                                                 ),
                                               ),
                                             ],
