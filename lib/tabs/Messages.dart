@@ -1,33 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
+import 'package:intl/intl.dart';
 
-class ScheduleTabDoctors extends StatefulWidget {
-  const ScheduleTabDoctors({Key? key}) : super(key: key);
+class Messages extends StatefulWidget {
+  const Messages({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleTabDoctors> createState() => _ScheduleTabDoctorsState();
+  State<Messages> createState() => _MessagesState();
 }
 
-class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
-  final Alignment _alignment = Alignment.centerLeft;
-
+class _MessagesState extends State<Messages> {
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
-      .collection('doctors')
-      .where('doctors_acceptance', isEqualTo: true)
+      .collection('message')
+      .where('receiver', isEqualTo: 'usertest@gmail.com')
       .snapshots();
-
-  String _name = '';
-  @override
-  void initState() {
-    super.initState();
-    getCurrentUseData().then((name) {
-      setState(() {
-        _name = name;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +85,12 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                       itemBuilder: (BuildContext context, int index) {
                         Map<String, dynamic> data = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        String doctorId = snapshot.data!.docs[index].id;
-
-                        String name = data['name'];
-                        String numberPhone = data['number_phone'];
-                        String address = data['address'];
+                        // String email = data['text'];
+                        String text = data['text'];
+                        DateTime now = data['time'].toDate();
+                        DateFormat formatter = DateFormat.yMd().add_jm();
+                        String messageTime = formatter.format(now);
+                        // String address = data['address'];
                         // String image = data['image'];
 
                         return Card(
@@ -126,7 +114,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     Column(
                                       children: [
                                         Text(
-                                          name,
+                                          text,
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                             color: Color(MyColors.header01),
@@ -145,10 +133,10 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'عنوان الطبيب : $address',
+                                        'نص الرسالة : $text',
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           color: Colors.black54,
                                         ),
                                       ),
@@ -163,7 +151,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                             width: 5,
                                           ),
                                           Text(
-                                            '50 - 4.0 تقييم',
+                                            'تم الإرسال فى $messageTime',
                                             style: TextStyle(
                                                 color: Color(MyColors.grey02)),
                                           ),
@@ -182,26 +170,12 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                   ),
                                   child: Text('طلب استشارة'),
                                   onPressed: () {
-                                    DateTime now = DateTime.now();
-                                    DateTime date =
-                                        DateTime(now.year, now.month, now.day);
-                                    Future doctorAppointmentschat() async {
-                                      CollectionReference mainCollectionRef =
-                                          FirebaseFirestore.instance
-                                              .collection('doctors')
-                                              .doc(doctorId)
-                                              .collection('doctorConsulting');
-
-                                      mainCollectionRef.add({
-                                        'acceptedChat': false,
-                                        'customerName': _name,
-                                        'date': date,
-                                        'content': "من فضلك أريد إستشارة",
-                                        'ClientId': currentUser.uid,
-                                      });
-                                    }
-
-                                    doctorAppointmentschat();
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) =>
+                                    //           const ChatDetailPage()),
+                                    // );
                                   },
                                 ),
                               ],

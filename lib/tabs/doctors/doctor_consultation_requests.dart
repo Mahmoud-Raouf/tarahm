@@ -18,6 +18,7 @@ class DoctorConsultationRequests extends StatefulWidget {
 class _DoctorConsultationRequestsState
     extends State<DoctorConsultationRequests> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   static String? documentId;
 
@@ -126,15 +127,14 @@ class _DoctorConsultationRequestsState
                                 snapshot.data!.docs[index].data()
                                     as Map<String, dynamic>;
 
-                            String AppointmentId =
-                                snapshot.data!.docs[index].id;
+                            String ConsultingId = snapshot.data!.docs[index].id;
 
                             DateTime now = data['date'].toDate();
                             DateFormat formatter = DateFormat.yMd().add_jm();
                             String formatted = formatter.format(now);
 
                             String? customerName = data['customerName'];
-                            String? title = data['title'];
+                            // String? title = data['title'];
 
                             String? content = data['content'];
                             // bool acceptedDate = data['acceptedDate'];
@@ -171,7 +171,7 @@ class _DoctorConsultationRequestsState
                                               height: 5,
                                             ),
                                             Text(
-                                              "عنوان الاستشارة : ${title!}",
+                                              "عنوان الاستشارة :ConsultingId",
                                               style: TextStyle(
                                                 color: Color(MyColors.grey02),
                                                 fontSize: 14,
@@ -215,10 +215,27 @@ class _DoctorConsultationRequestsState
                                           child: OutlinedButton(
                                             child: Text('رد'),
                                             onPressed: () {
+                                              final databaseReference =
+                                                  FirebaseFirestore.instance;
+                                              databaseReference
+                                                  .collection('doctors')
+                                                  .doc(documentId)
+                                                  .collection(
+                                                      'doctorConsulting')
+                                                  .doc(ConsultingId)
+                                                  .collection('message')
+                                                  .doc()
+                                                  .set({
+                                                "messageType": "sender",
+                                                "text": "من فضلك أريد إستشارة",
+                                                "time": now,
+                                              });
                                               Navigator.push(context,
                                                   MaterialPageRoute(
                                                       builder: (context) {
-                                                return ChatDetailPage();
+                                                return ChatDetailPage(
+                                                    ConsultingId: ConsultingId,
+                                                    documentId: documentId!);
                                               }));
                                             },
                                           ),
@@ -233,7 +250,7 @@ class _DoctorConsultationRequestsState
                                                 backgroundColor: Color.fromARGB(
                                                     255, 243, 33, 33),
                                                 shadowColor: Colors.black),
-                                            onPressed: () => {},
+                                            onPressed: () {},
                                           ),
                                         )
                                       ],

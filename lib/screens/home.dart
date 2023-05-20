@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/tabs/HomeTab.dart';
+import 'package:medicare/tabs/Messages.dart';
 import 'package:medicare/tabs/Profile.dart';
 import 'package:medicare/tabs/clinics_Appointment.dart';
 import 'package:medicare/tabs/doctors_Appointment.dart';
@@ -17,7 +18,8 @@ List<Map> navigationBarItems = [
   {'icon': Icons.local_hospital, 'index': 0},
   {'icon': Icons.calendar_today, 'index': 1},
   {'icon': Icons.question_answer_outlined, 'index': 2},
-  {'icon': Icons.person_2_outlined, 'index': 3},
+  {'icon': Icons.message_outlined, 'index': 3},
+  {'icon': Icons.person_2_outlined, 'index': 4},
 ];
 
 class _HomeState extends State<Home> {
@@ -44,6 +46,7 @@ class _HomeState extends State<Home> {
       ),
       ScheduleTabClinics(),
       ScheduleTabDoctors(),
+      Messages(),
       ProfileDetail(),
     ];
 
