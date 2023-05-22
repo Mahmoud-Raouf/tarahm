@@ -211,8 +211,7 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                       width: 240,
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Color(MyColors.header01),
+                                            primary: Color(MyColors.header01),
                                           ),
                                           child: Text('حجز موعد'),
                                           onPressed: () async {

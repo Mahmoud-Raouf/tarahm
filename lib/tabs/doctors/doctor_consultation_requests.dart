@@ -247,7 +247,7 @@ class _DoctorConsultationRequestsState
                                           child: ElevatedButton(
                                             child: Text('مسح'),
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor: Color.fromARGB(
+                                                primary: Color.fromARGB(
                                                     255, 243, 33, 33),
                                                 shadowColor: Colors.black),
                                             onPressed: () {},

@@ -216,7 +216,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                 child: ElevatedButton(
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor: Color(
+                                                    primary: Color(
                                                         MyColors.header01),
                                                   ),
                                                   child: Text('قبول '),
@@ -252,8 +252,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                 child: ElevatedButton(
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.red[500],
+                                                    primary: Colors.red[500],
                                                   ),
                                                   child: Text('رفض '),
                                                   onPressed: () {
@@ -288,7 +287,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             width: 140,
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
+                                                primary:
                                                     Color(MyColors.header01),
                                               ),
                                               child: Text('تم الحجز'),

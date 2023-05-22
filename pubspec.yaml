@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0" #dart
+  sdk: ">=2.12.0 <3.0.0" #dart
 
 dependencies:
   flutter:
@@ -17,9 +17,6 @@ dependencies:
   cloud_firestore: ^4.4.5
   flutter_screenutil: ^5.7.0
   image_picker: ^0.8.5+3
-
-
-
 
 
 dev_dependencies:

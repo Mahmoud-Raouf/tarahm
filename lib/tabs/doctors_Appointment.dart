@@ -177,7 +177,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                 ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
+                                    primary:
                                         Color(MyColors.kprimaryButtonsColor),
                                   ),
                                   child: Text('طلب استشارة'),

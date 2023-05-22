@@ -239,8 +239,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Color(MyColors.yellow01),
+                                              primary: Color(MyColors.yellow01),
                                             ),
                                             child: Text('قبول '),
                                             onPressed: () {
@@ -266,7 +265,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red[400],
+                                              primary: Colors.red[400],
                                             ),
                                             child: Text('رفض '),
                                             onPressed: () => {},

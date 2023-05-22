@@ -19,7 +19,7 @@ List<Map> navigationBarItems = [
   {'icon': Icons.calendar_today, 'index': 1},
   {'icon': Icons.question_answer_outlined, 'index': 2},
   {'icon': Icons.message_outlined, 'index': 3},
-  {'icon': Icons.person_2_outlined, 'index': 4},
+  {'icon': Icons.person_outlined, 'index': 4},
 ];
 
 class _HomeState extends State<Home> {
