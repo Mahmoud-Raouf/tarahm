@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
@@ -14,8 +16,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
   final _numberphoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   static Future<void> initialize() async {
     getCurrentUseData();
@@ -25,6 +26,14 @@ class _ProfileDetailState extends State<ProfileDetail> {
 
   String _name = "";
   String _number = "";
+
+  String nameContent = "";
+  String? numberContent = "";
+  String? emailContent = "";
+  Future<void> updateEmail(String emailContent) async {
+    User? user = _auth.currentUser;
+    await user?.updateEmail(emailContent);
+  }
 
   @override
   void initState() {
@@ -141,6 +150,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                           bottom:
                                               BorderSide(color: Colors.grey))),
                                   child: TextField(
+                                    onChanged: (value) {
+                                      emailContent = value;
+                                    },
                                     controller: _emailController,
                                     textAlign: TextAlign.right,
                                     decoration: InputDecoration(
@@ -160,6 +172,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                           bottom:
                                               BorderSide(color: Colors.grey))),
                                   child: TextField(
+                                    onChanged: (value) {
+                                      nameContent = value;
+                                    },
                                     controller: _nameController,
                                     textAlign: TextAlign.right,
                                     decoration: InputDecoration(
@@ -174,6 +189,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                   height: 64,
                                   padding: EdgeInsets.only(right: 12.0),
                                   child: TextField(
+                                    onChanged: (value) {
+                                      numberContent = value;
+                                    },
                                     controller: _numberphoneController,
                                     textAlign: TextAlign.right,
                                     decoration: InputDecoration(
@@ -194,7 +212,28 @@ class _ProfileDetailState extends State<ProfileDetail> {
                             height: 20,
                           ),
                           GestureDetector(
-                            // onTap: signUp,
+                            onTap: () {
+                              Future<void> updateProfile() async {
+                                QuerySnapshot snapshot = await FirebaseFirestore
+                                    .instance
+                                    .collection('customUsers')
+                                    .where('uid', isEqualTo: Useruid)
+                                    .get();
+
+                                FirebaseFirestore.instance
+                                    .collection('customUsers')
+                                    .doc(snapshot.docs[0].id)
+                                    .update({
+                                  'name': nameContent,
+                                  'number': numberContent,
+                                });
+                              }
+
+                              if (emailContent != "") {
+                                updateEmail(emailContent!);
+                              }
+                              updateProfile();
+                            },
                             child: Container(
                               height: 50,
                               decoration: BoxDecoration(
