@@ -11,7 +11,7 @@ import 'package:medicare/screens/home.dart';
 import 'package:medicare/styles/colors.dart';
 
 class RequestToCreateDoctor extends StatefulWidget {
-  const RequestToCreateDoctor();
+  const RequestToCreateDoctor({Key? key}) : super(key: key);
 
   @override
   State<RequestToCreateDoctor> createState() => _RequestToCreateDoctorState();
@@ -25,13 +25,13 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   Future createClinic() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     CollectionReference userref =
-        FirebaseFirestore.instance.collection('customUsers');
+        FirebaseFirestore.instance.collection('doctors');
     userref.add({
       "userId": currentUser.uid,
       'name': name.text,
       'number_phone': numberPhone.text,
       'address': numberPhone.text,
-      'clinic_acceptance': false,
+      'doctors_acceptance': false,
     });
     Navigator.push(
       context,

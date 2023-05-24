@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/models/chatMessageModel.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final messageTextController = TextEditingController();
   late String Useruid;
   late String Useremail;
+  String rolename = "";
 
   String? messageContent;
   String? messageType;
@@ -39,6 +41,20 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     } catch (e) {
       print(e);
     }
+    getRoleCurrentUser().then((rolename) {
+      setState(() {
+        rolename = rolename;
+      });
+      if (rolename == "doctor") {
+        setState(() {
+          messageType = 'receiver';
+        });
+      } else {
+        setState(() {
+          messageType = "sender";
+        });
+      }
+    });
   }
 
   @override
@@ -236,18 +252,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               Timestamp currentTimestamp =
                                   Timestamp.fromDate(now);
                               mainCollectionRef.add({
-                                'messageType': 'receiver',
+                                'messageType': messageType,
                                 'text': messageContent,
                                 'time': currentTimestamp,
                               });
                             }
 
-                            setState(() {
-                              messageContent = null;
-                            });
-                            if (messageContent != null) {
-                              doctorAppointmentschat();
-                            }
+                            doctorAppointmentschat();
                           },
                           child: Icon(
                             Icons.send,

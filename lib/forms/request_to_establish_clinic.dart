@@ -11,7 +11,7 @@ import 'package:medicare/screens/home.dart';
 import 'package:medicare/styles/colors.dart';
 
 class RequestToEstablishClinic extends StatefulWidget {
-  const RequestToEstablishClinic();
+  const RequestToEstablishClinic({Key? key}) : super(key: key);
 
   @override
   State<RequestToEstablishClinic> createState() =>
@@ -28,8 +28,8 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     CollectionReference userref =
         FirebaseFirestore.instance.collection('clinics');
-    CollectionReference customUsersref =
-        FirebaseFirestore.instance.collection('customUsers');
+    // CollectionReference customUsersref =
+    //     FirebaseFirestore.instance.collection('customUsers');
     userref.add({
       "userId": currentUser.uid,
       'title': title.text,
@@ -37,10 +37,10 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
       'address': numberPhone.text,
       'clinic_acceptance': false,
     });
-    customUsersref.add({
-      "uid": currentUser.uid,
-      'role': "clinic",
-    });
+    // customUsersref.add({
+    //   "uid": currentUser.uid,
+    //   'role': "clinic",
+    // });
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Home()),

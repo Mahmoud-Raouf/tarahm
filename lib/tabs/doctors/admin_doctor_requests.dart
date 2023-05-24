@@ -11,55 +11,7 @@ class Adminrequests extends StatefulWidget {
   State<Adminrequests> createState() => _AdminrequestsState();
 }
 
-enum FilterStatus {
-  Upcoming,
-}
-
-List<Map> schedules = [
-  {
-    'img': 'assets/doctors/doctor03.jpeg',
-    'doctorName': 'د. فهد العتيبي',
-    'numberPhone': '0521321543',
-    'address': 'الطائف',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor02.png',
-    'doctorName': 'د. على مرزوق',
-    'numberPhone': '0512123231',
-    'address': 'تابوك',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. سحر ماجد',
-    'numberPhone': '0520999983',
-    'address': 'جدة',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor04.jpeg',
-    'doctorName': 'د. أحلام المطيري',
-    'numberPhone': '0521534233',
-    'address': 'مكة',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-  {
-    'img': 'assets/doctors/doctor01.jpeg',
-    'doctorName': 'د. سعيد عبدالله',
-    'numberPhone': '0521321543',
-    'address': 'الرياض',
-    'request': 'false',
-    'status': FilterStatus.Upcoming,
-  },
-];
-
 class _AdminrequestsState extends State<Adminrequests> {
-  FilterStatus status = FilterStatus.Upcoming;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
@@ -168,7 +120,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                             String name = data['name'];
                             String numberPhone = data['number_phone'];
                             String address = data['address'];
-                            String image = data['image'];
+                            // String image = data['image'];
                             String documentId = snapshot.data!.docs[index].id;
 
                             return Card(
@@ -180,13 +132,13 @@ class _AdminrequestsState extends State<Adminrequests> {
                                   children: [
                                     Row(
                                       children: [
-                                        CircleAvatar(
-                                          child: ClipOval(
-                                              child: Image.network(
-                                            image,
-                                            fit: BoxFit.cover,
-                                          )),
-                                        ),
+                                        // CircleAvatar(
+                                        //   child: ClipOval(
+                                        //       child: Image.network(
+                                        //     image,
+                                        //     fit: BoxFit.cover,
+                                        //   )),
+                                        // ),
                                         SizedBox(
                                           width: 10,
                                         ),
@@ -239,7 +191,8 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Color(MyColors.yellow01),
+                                              backgroundColor:
+                                                  Color(MyColors.yellow01),
                                             ),
                                             child: Text('قبول '),
                                             onPressed: () {
@@ -265,7 +218,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.red[400],
+                                              backgroundColor: Colors.red[400],
                                             ),
                                             child: Text('رفض '),
                                             onPressed: () => {},

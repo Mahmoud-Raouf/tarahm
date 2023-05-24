@@ -137,7 +137,7 @@ class _DoctorConsultationRequestsState
                             // String? title = data['title'];
 
                             String? content = data['content'];
-                            // bool acceptedDate = data['acceptedDate'];
+                            bool acceptedChat = data['acceptedChat'];
                             // String image = data['image'];
 
                             return Card(
@@ -207,54 +207,115 @@ class _DoctorConsultationRequestsState
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: OutlinedButton(
-                                            child: Text('رد'),
-                                            onPressed: () {
-                                              final databaseReference =
-                                                  FirebaseFirestore.instance;
-                                              databaseReference
-                                                  .collection('doctors')
-                                                  .doc(documentId)
-                                                  .collection(
-                                                      'doctorConsulting')
-                                                  .doc(ConsultingId)
-                                                  .collection('message')
-                                                  .doc()
-                                                  .set({
-                                                "messageType": "sender",
-                                                "text": "من فضلك أريد إستشارة",
-                                                "time": now,
-                                              });
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return ChatDetailPage(
-                                                    ConsultingId: ConsultingId,
-                                                    documentId: documentId!);
-                                              }));
-                                            },
+                                    acceptedChat == false
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: OutlinedButton(
+                                                  child: Text('رد'),
+                                                  onPressed: () {
+                                                    final accebtedReference =
+                                                        FirebaseFirestore
+                                                            .instance;
+                                                    accebtedReference
+                                                        .collection('doctors')
+                                                        .doc(documentId)
+                                                        .collection(
+                                                            'doctorConsulting')
+                                                        .doc(ConsultingId);
+                                                    Future
+                                                        consultingAccepted() async {
+                                                      CollectionReference
+                                                          clinicsref =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'doctors')
+                                                              .doc(documentId)
+                                                              .collection(
+                                                                  'doctorConsulting');
+
+                                                      clinicsref
+                                                          .doc(ConsultingId)
+                                                          .update({
+                                                        'acceptedChat': true,
+                                                      });
+                                                      final databaseReference =
+                                                          FirebaseFirestore
+                                                              .instance;
+                                                      databaseReference
+                                                          .collection('doctors')
+                                                          .doc(documentId)
+                                                          .collection(
+                                                              'doctorConsulting')
+                                                          .doc(ConsultingId)
+                                                          .collection('message')
+                                                          .doc()
+                                                          .set({
+                                                        "messageType": "sender",
+                                                        "text":
+                                                            "من فضلك أريد إستشارة",
+                                                        "time": now,
+                                                      });
+                                                    }
+
+                                                    consultingAccepted();
+
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return ChatDetailPage(
+                                                          ConsultingId:
+                                                              ConsultingId,
+                                                          documentId:
+                                                              documentId!);
+                                                    }));
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  child: Text('مسح'),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  243,
+                                                                  33,
+                                                                  33),
+                                                          shadowColor:
+                                                              Colors.black),
+                                                  onPressed: () {},
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            width: 140,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Color(MyColors.header01),
+                                              ),
+                                              child: Text('عرض المحادثة'),
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return ChatDetailPage(
+                                                      ConsultingId:
+                                                          ConsultingId,
+                                                      documentId: documentId!);
+                                                }));
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            child: Text('مسح'),
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Color.fromARGB(
-                                                    255, 243, 33, 33),
-                                                shadowColor: Colors.black),
-                                            onPressed: () {},
-                                          ),
-                                        )
-                                      ],
-                                    )
                                   ],
                                 ),
                               ),
