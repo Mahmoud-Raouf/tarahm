@@ -9,7 +9,7 @@ import 'package:medicare/tabs/clinics/admin_clinics_requests.dart';
 import 'package:medicare/tabs/clinics/customerAppointmentClinic.dart';
 import 'package:medicare/tabs/doctors/admin_doctor_requests.dart';
 import 'package:medicare/tabs/doctors/doctor_consultation_requests.dart';
-import 'package:medicare/tabs/users.dart';
+import 'package:medicare/tabs/admin/users.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -29,12 +29,10 @@ class _NavBarState extends State<NavBar> {
         _rolename = rolename;
       });
     });
-    print("DocumentSnapshot $_rolename");
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -137,7 +135,7 @@ class _NavBarState extends State<NavBar> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Users()),
+                                builder: (context) => const AllUsers()),
                           ),
                         ),
                       ],

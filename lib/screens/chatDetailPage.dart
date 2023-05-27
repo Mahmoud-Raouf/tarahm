@@ -8,10 +8,14 @@ import 'package:intl/intl.dart';
 
 class ChatDetailPage extends StatefulWidget {
   const ChatDetailPage(
-      {Key? key, required this.documentId, required this.ConsultingId})
+      {Key? key,
+      required this.documentId,
+      required this.ConsultingId,
+      this.chatName = "دكتور"})
       : super(key: key);
   final String ConsultingId;
   final String documentId;
+  final String chatName;
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
 }
@@ -30,6 +34,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void initState() {
     super.initState();
+
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -86,7 +91,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         ),
                       ),
                       Text(
-                        "وجدان",
+                        widget.chatName,
                         style: TextStyle(
                             fontSize: 18, color: Color(MyColors.yellow02)),
                       ),
@@ -127,10 +132,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     final messageText = message.get('text');
                                     final messageType =
                                         message.get("messageType");
+
                                     DateTime now = message.get("time").toDate();
                                     DateFormat formatter =
                                         DateFormat.yMd().add_jm();
                                     String messageTime = formatter.format(now);
+
                                     messagesWidgets.add(
                                       ChatMessage(
                                         messageContent: messageText,

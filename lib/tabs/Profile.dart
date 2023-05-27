@@ -18,12 +18,6 @@ class _ProfileDetailState extends State<ProfileDetail> {
   final _numberphoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static Future<void> initialize() async {
-    getCurrentUseData();
-    getCurrentUserNumberPhone();
-    getCurrentEmail();
-  }
-
   String _name = "";
   String _number = "";
 
@@ -234,20 +228,29 @@ class _ProfileDetailState extends State<ProfileDetail> {
                               }
                               updateProfile();
                             },
-                            child: Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: LinearGradient(colors: const [
-                                    Color.fromRGBO(23, 128, 4, 1),
-                                    Color.fromRGBO(51, 223, 0, .6),
-                                  ])),
-                              child: Center(
-                                child: Text(
-                                  "تعديل بياناتك",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfileDetail()),
+                                );
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(colors: const [
+                                      Color.fromRGBO(23, 128, 4, 1),
+                                      Color.fromRGBO(51, 223, 0, .6),
+                                    ])),
+                                child: Center(
+                                  child: Text(
+                                    "تعديل بياناتك",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ),

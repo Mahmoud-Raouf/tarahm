@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
+import 'package:medicare/screens/chatDetailPage.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:intl/intl.dart';
 
@@ -11,10 +13,68 @@ class Messages extends StatefulWidget {
 }
 
 class _MessagesState extends State<Messages> {
-  Stream<QuerySnapshot> stream = FirebaseFirestore.instance
-      .collection('message')
-      .where('receiver', isEqualTo: 'usertest@gmail.com')
-      .snapshots();
+  // StreamController<QuerySnapshot<Map<String, dynamic>>> streamController =
+  //     StreamController<QuerySnapshot<Map<String, dynamic>>>.broadcast();
+
+  List<Map<String, dynamic>> listoPisto = [];
+  List<String> listodoctorId = [];
+  List<String> consultingId = [];
+  List<String> doctorName = [];
+
+/*
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance.collection('doctors').get().then((event) {
+      for (var element in event.docs) {
+        streamController.addStream(FirebaseFirestore.instance
+            .collection('doctors')
+            .doc(element.id)
+            .collection('doctorConsulting')
+            .where('ClientId', isEqualTo: currentUser.uid)
+            .where('acceptedChat', isEqualTo: true)
+            .snapshots()
+            .map((event) {
+          return event;
+        }));
+      }
+    });
+  }
+*/
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('doctors')
+        .get()
+        .then((QuerySnapshot<Map<String, dynamic>> doctorsSnapshot) {
+      List<Map<String, dynamic>> listopesto = [];
+      for (var doctorDoc in doctorsSnapshot.docs) {
+        listodoctorId.add(doctorDoc.id);
+
+        FirebaseFirestore.instance
+            .collection('doctors')
+            .doc(doctorDoc.id)
+            .collection('doctorConsulting')
+            .where('ClientId', isEqualTo: currentUser.uid)
+            .where('acceptedChat', isEqualTo: true)
+            .get()
+            .then((QuerySnapshot<Map<String, dynamic>> consultingSnapshot) {
+          for (var consultingDoc in consultingSnapshot.docs) {
+            Map<String, dynamic> documentData = consultingDoc.data();
+            consultingId.add(consultingDoc.id);
+            listopesto.add(documentData);
+            if (mounted) {
+              setState(() {});
+            }
+          }
+        });
+      }
+      listoPisto = listopesto;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +111,7 @@ class _MessagesState extends State<Messages> {
                                 ),
                               ),
                               Spacer(),
-                              Text("طلب إستشارة",
+                              Text("إستشاراتك",
                                   style: TextStyle(
                                       color: Color(MyColors.header01),
                                       fontWeight: FontWeight.w800)),
@@ -68,130 +128,83 @@ class _MessagesState extends State<Messages> {
               height: 20,
             ),
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: stream,
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
+              child: ListView.builder(
+                itemCount: listoPisto.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Map<String, dynamic> data = listoPisto[index];
+                  print('data : $data');
 
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        Map<String, dynamic> data = snapshot.data!.docs[index]
-                            .data() as Map<String, dynamic>;
-                        // String email = data['text'];
-                        String text = data['text'];
-                        DateTime now = data['time'].toDate();
-                        DateFormat formatter = DateFormat.yMd().add_jm();
-                        String messageTime = formatter.format(now);
-                        // String address = data['address'];
-                        // String image = data['image'];
+                  DateTime now = data['date'].toDate();
+                  DateFormat formatter = DateFormat.yMd().add_jm();
+                  String messageTime = formatter.format(now);
+                  String? doctorName = data['doctorName'];
+                  List DoctorId = listodoctorId;
+                  List Consultingid = consultingId;
 
-                        return Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(15),
+                  return Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: const [
+                              // CircleAvatar(
+                              //   child: ClipOval(
+                              //       child: Image.network(
+                              //     image,
+                              //     fit: BoxFit.cover,
+                              //   )),
+                              // ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    // CircleAvatar(
-                                    //   child: ClipOval(
-                                    //       child: Image.network(
-                                    //     image,
-                                    //     fit: BoxFit.cover,
-                                    //   )),
-                                    // ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          text,
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            color: Color(MyColors.header01),
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 30),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'نص الرسالة : $text',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            color: Color(MyColors.yellow02),
-                                            size: 18,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            'تم الإرسال فى $messageTime',
-                                            style: TextStyle(
-                                                color: Color(MyColors.grey02)),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                Text(
+                                  'رسالة من دكتور : $doctorName',
+                                  // 'نص الرسالة : $content',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color(MyColors.kprimaryButtonsColor),
-                                  ),
-                                  child: Text('طلب استشارة'),
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           const ChatDetailPage()),
-                                    // );
-                                  },
+                                Text(
+                                  'تم الإرسال فى : $messageTime',
+                                  style:
+                                      TextStyle(color: Color(MyColors.grey02)),
                                 ),
                               ],
                             ),
                           ),
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    Center(child: Text('لا يوجد عيادات'));
-                  }
-                  return Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator()),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Color(MyColors.kprimaryButtonsColor),
+                            ),
+                            child: Text('فتح المحادثة'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatDetailPage(
+                                      ConsultingId: Consultingid[index],
+                                      documentId: DoctorId[index],
+                                      chatName: doctorName!),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               ),

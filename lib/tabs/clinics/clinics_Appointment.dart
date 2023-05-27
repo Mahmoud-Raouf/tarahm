@@ -2,35 +2,60 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ScheduleTabDoctors extends StatefulWidget {
-  const ScheduleTabDoctors({Key? key}) : super(key: key);
+class ScheduleTabClinics extends StatefulWidget {
+  const ScheduleTabClinics({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleTabDoctors> createState() => _ScheduleTabDoctorsState();
+  State<ScheduleTabClinics> createState() => _ScheduleTabClinicsState();
 }
 
-class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
-  final Alignment _alignment = Alignment.centerLeft;
+class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
+  TextEditingController dateCtl = TextEditingController();
+  static String? ClinicId;
+  static String? Useruid;
+
+  static Future<void> initialize() async {
+    ClinicId = await getclinicAppointmentsDocument();
+    getCurrentUseData();
+    getCurrentUserNumberPhone();
+  }
 
   Stream<QuerySnapshot> stream = FirebaseFirestore.instance
-      .collection('doctors')
-      .where('doctors_acceptance', isEqualTo: true)
+      .collection('clinics')
+      .where('clinic_acceptance', isEqualTo: true)
       .snapshots();
 
-  String _name = '';
+  DateTime? _selectedDate;
+
+  String nameuser = "";
+  String numberuser = "";
+  String nuseruidame = "";
+
   @override
   void initState() {
     super.initState();
+
     getCurrentUseData().then((name) {
       setState(() {
-        _name = name;
+        nameuser = name;
       });
+    });
+    getCurrentUserNumberPhone().then((number) {
+      setState(() {
+        numberuser = number;
+      });
+    });
+    setState(() {
+      Useruid = currentUser.uid;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Size ksize = MediaQuery.of(context).size;
+    ScreenUtil.init(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 30, top: 30, right: 30),
@@ -41,7 +66,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 41,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Color(MyColors.bg),
                     borderRadius: BorderRadius.circular(20),
@@ -50,25 +75,28 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Scaffold.of(context).openDrawer();
-                                },
-                                child: CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/person.jpg'),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Scaffold.of(context).openDrawer();
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/person.jpg'),
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              Text("طلب إستشارة",
-                                  style: TextStyle(
-                                      color: Color(MyColors.header01),
-                                      fontWeight: FontWeight.w800)),
-                            ],
+                                Spacer(),
+                                Text("حجز عيادة",
+                                    style: TextStyle(
+                                        color: Color(MyColors.header01),
+                                        fontWeight: FontWeight.w800)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -89,7 +117,16 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                     return Text('Error: ${snapshot.error}');
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return SizedBox(
+                      width: 20.0,
+                      height: 20.0,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.deepOrange,
+                        ),
+                      ),
+                    );
                   }
 
                   if (snapshot.hasData) {
@@ -98,9 +135,8 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                       itemBuilder: (BuildContext context, int index) {
                         Map<String, dynamic> data = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        String doctorId = snapshot.data!.docs[index].id;
-
-                        String name = data['name'];
+                        String ClinicId = snapshot.data!.docs[index].id;
+                        String mytitle = data['title'];
                         String numberPhone = data['number_phone'];
                         String address = data['address'];
                         // String image = data['image'];
@@ -126,7 +162,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     Column(
                                       children: [
                                         Text(
-                                          name,
+                                          mytitle,
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                             color: Color(MyColors.header01),
@@ -138,71 +174,80 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                   ],
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 30),
+                                  padding: const EdgeInsets.only(right: 20),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'عنوان الطبيب : $address',
+                                        'رقم الهاتف : $numberPhone',
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           color: Colors.black54,
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            color: Color(MyColors.yellow02),
-                                            size: 18,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            '50 - 4.0 تقييم',
-                                            style: TextStyle(
-                                                color: Color(MyColors.grey02)),
-                                          ),
-                                        ],
-                                      )
+                                      Text(
+                                        'عنوان العيادة:  $address',
+                                        style: TextStyle(
+                                            color: Color(MyColors.grey02)),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 SizedBox(
                                   height: 15,
                                 ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary:
-                                        Color(MyColors.kprimaryButtonsColor),
-                                  ),
-                                  child: Text('طلب استشارة'),
-                                  onPressed: () {
-                                    DateTime now = DateTime.now();
-                                    DateTime date =
-                                        DateTime(now.year, now.month, now.day);
-                                    Future doctorAppointmentschat() async {
-                                      CollectionReference mainCollectionRef =
-                                          FirebaseFirestore.instance
-                                              .collection('doctors')
-                                              .doc(doctorId)
-                                              .collection('doctorConsulting');
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 240,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Color(MyColors.header01),
+                                          ),
+                                          child: Text('حجز موعد'),
+                                          onPressed: () async {
+                                            // Show the date picker
+                                            DateTime? selectedDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2100),
+                                            );
+                                            Future
+                                                clinicAppointmentsAccepted() async {
+                                              CollectionReference
+                                                  mainCollectionRef =
+                                                  FirebaseFirestore.instance
+                                                      .collection('clinics')
+                                                      .doc(ClinicId)
+                                                      .collection(
+                                                          'clinicAppointments');
 
-                                      mainCollectionRef.add({
-                                        'acceptedChat': false,
-                                        'customerName': _name,
-                                        'date': date,
-                                        'content': "من فضلك أريد إستشارة",
-                                        'ClientId': currentUser.uid,
-                                      });
-                                    }
+                                              mainCollectionRef.add({
+                                                'acceptedDate': false,
+                                                'customerName': nameuser,
+                                                'date': _selectedDate,
+                                                'numberPhone': numberuser,
+                                                'presonbookingid': Useruid,
+                                                "clinicName": mytitle
+                                              });
+                                            }
 
-                                    doctorAppointmentschat();
-                                  },
+                                            // Update the selected date
+                                            setState(() {
+                                              _selectedDate =
+                                                  selectedDate ?? _selectedDate;
+                                              clinicAppointmentsAccepted();
+                                            });
+                                          }),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -215,9 +260,14 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                   }
                   return Center(
                     child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator()),
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.deepOrange,
+                          ),
+                        )),
                   );
                 },
               ),

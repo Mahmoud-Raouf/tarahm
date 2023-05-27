@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/screens/chatDetailPage.dart';
@@ -21,6 +23,7 @@ class _DoctorConsultationRequestsState
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   static String? documentId;
+  static String? doctorName;
 
   static Future<void> initialize() async {
     documentId = await getdoctorConsultingDocument();
@@ -31,11 +34,36 @@ class _DoctorConsultationRequestsState
       .doc(documentId)
       .collection('doctorConsulting')
       .snapshots();
+  sendEmail(String email, String messageWelcome, String content) async {
+    String username = 'lujainqm1@gmail.com';
+    String password = 'hlbhuckrhjunkdfe';
+    final smtpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, 'تراحم')
+      ..recipients.add(email)
+      ..subject = messageWelcome
+      ..html = "<h1>$content</h1>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-
+    getCurrentUseData().then((name) {
+      setState(() {
+        doctorName = name;
+      });
+    });
     getdoctorConsultingDocument().then((id) {
       setState(() {
         documentId = id;
@@ -138,6 +166,7 @@ class _DoctorConsultationRequestsState
 
                             String? content = data['content'];
                             bool acceptedChat = data['acceptedChat'];
+                            String? doctorName = data['doctorName'];
                             // String image = data['image'];
 
                             return Card(
@@ -158,6 +187,15 @@ class _DoctorConsultationRequestsState
                                         ),
                                         Column(
                                           children: [
+                                            // Text(
+                                            //   " إسم الدكتور : $DoctorName",
+                                            //   textAlign: TextAlign.right,
+                                            //   style: TextStyle(
+                                            //     fontSize: 16,
+                                            //     color: Color(MyColors.header01),
+                                            //     fontWeight: FontWeight.w700,
+                                            //   ),
+                                            // ),
                                             Text(
                                               " إسم الراسل : ${customerName!}",
                                               textAlign: TextAlign.right,
@@ -241,7 +279,10 @@ class _DoctorConsultationRequestsState
                                                           .doc(ConsultingId)
                                                           .update({
                                                         'acceptedChat': true,
+                                                        'doctorName':
+                                                            doctorName,
                                                       });
+
                                                       final databaseReference =
                                                           FirebaseFirestore
                                                               .instance;
@@ -262,7 +303,11 @@ class _DoctorConsultationRequestsState
                                                     }
 
                                                     consultingAccepted();
-
+                                                    sendEmail(
+                                                      "ma7mod.raouf@gmail.com",
+                                                      "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
+                                                      " تم الرد على إستشارتك من قبل دكتور $doctorName فى ${DateTime.now()}",
+                                                    );
                                                     Navigator.push(context,
                                                         MaterialPageRoute(
                                                             builder: (context) {
@@ -291,7 +336,35 @@ class _DoctorConsultationRequestsState
                                                                   33),
                                                           shadowColor:
                                                               Colors.black),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    Future
+                                                        clinicAppointmentsAccepted() async {
+                                                      CollectionReference
+                                                          mainCollectionRef =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'doctors');
+                                                      DocumentReference
+                                                          documentRef =
+                                                          mainCollectionRef
+                                                              .doc(documentId)
+                                                              .collection(
+                                                                  'doctorConsulting')
+                                                              .doc(
+                                                                  ConsultingId);
+
+                                                      await documentRef
+                                                          .delete();
+                                                    }
+
+                                                    clinicAppointmentsAccepted();
+                                                    sendEmail(
+                                                      "ma7mod.raouf@gmail.com",
+                                                      "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
+                                                      " تم رفض حجز إستشارة مع دكتور $doctorName بتاريخ ${DateTime.now()}",
+                                                    );
+                                                  },
                                                 ),
                                               )
                                             ],
@@ -309,9 +382,10 @@ class _DoctorConsultationRequestsState
                                                     MaterialPageRoute(
                                                         builder: (context) {
                                                   return ChatDetailPage(
-                                                      ConsultingId:
-                                                          ConsultingId,
-                                                      documentId: documentId!);
+                                                    ConsultingId: ConsultingId,
+                                                    documentId: documentId!,
+                                                    chatName: customerName,
+                                                  );
                                                 }));
                                               },
                                             ),

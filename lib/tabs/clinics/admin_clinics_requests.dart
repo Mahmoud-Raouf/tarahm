@@ -13,7 +13,6 @@ class ClinicsRequests extends StatefulWidget {
 }
 
 class _ClinicsRequestsState extends State<ClinicsRequests> {
-  final Alignment _alignment = Alignment.centerLeft;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   // final List data = getclinicData();
@@ -199,7 +198,8 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Color(MyColors.header01),
+                                              backgroundColor:
+                                                  Color(MyColors.header01),
                                             ),
                                             child: Text('قبول '),
                                             onPressed: () {
@@ -214,7 +214,6 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                                   'clinic_acceptance': true,
                                                 });
                                                 updateDocumentRole();
-                                                print('userId $userId');
                                               }
 
                                               clinicAccepted();
@@ -225,7 +224,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                           width: 140,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.red[500],
+                                              backgroundColor: Colors.red[500],
                                             ),
                                             child: Text('رفض '),
                                             onPressed: () => {},

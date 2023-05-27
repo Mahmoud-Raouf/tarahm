@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +32,28 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
       .doc(documentId)
       .collection('clinicAppointments')
       .snapshots();
+
+  sendEmail(String email, String messageWelcome, String content) async {
+    String username = 'lujainqm1@gmail.com';
+    String password = 'hlbhuckrhjunkdfe';
+    final smtpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, 'Your name')
+      ..recipients.add(email)
+      ..subject = messageWelcome
+      ..html = "<h1>$content</h1>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -139,6 +163,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                             String? numberPhone = data['numberPhone'];
                             bool acceptedDate = data['acceptedDate'];
+                            String? clinicName = data['clinicName'];
                             // String image = data['image'];
 
                             return Card(
@@ -195,11 +220,6 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             style: TextStyle(
                                                 color: Color(MyColors.grey02)),
                                           ),
-                                          Text(
-                                            'id :  $AppointmentId',
-                                            style: TextStyle(
-                                                color: Color(MyColors.grey02)),
-                                          ),
                                         ],
                                       ),
                                     ),
@@ -216,7 +236,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                 child: ElevatedButton(
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: Color(
+                                                    backgroundColor: Color(
                                                         MyColors.header01),
                                                   ),
                                                   child: Text('قبول '),
@@ -244,6 +264,11 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                     }
 
                                                     clinicAppointmentsAccepted();
+                                                    sendEmail(
+                                                      "ma7mod.raouf@gmail.com",
+                                                      "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
+                                                      " تم  قبول حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
+                                                    );
                                                   },
                                                 ),
                                               ),
@@ -252,7 +277,8 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                 child: ElevatedButton(
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: Colors.red[500],
+                                                    backgroundColor:
+                                                        Colors.red[500],
                                                   ),
                                                   child: Text('رفض '),
                                                   onPressed: () {
@@ -278,6 +304,11 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                                     }
 
                                                     clinicAppointmentsAccepted();
+                                                    sendEmail(
+                                                      "ma7mod.raouf@gmail.com",
+                                                      "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
+                                                      " تم رفض حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
+                                                    );
                                                   },
                                                 ),
                                               ),
@@ -287,7 +318,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             width: 140,
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                primary:
+                                                backgroundColor:
                                                     Color(MyColors.header01),
                                               ),
                                               child: Text('تم الحجز'),

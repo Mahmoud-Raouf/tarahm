@@ -4,8 +4,8 @@ import 'package:medicare/styles/colors.dart';
 import 'package:medicare/tabs/HomeTab.dart';
 import 'package:medicare/tabs/Messages.dart';
 import 'package:medicare/tabs/Profile.dart';
-import 'package:medicare/tabs/clinics_Appointment.dart';
-import 'package:medicare/tabs/doctors_Appointment.dart';
+import 'package:medicare/tabs/clinics/clinics_Appointment.dart';
+import 'package:medicare/tabs/doctors/doctors_Appointment.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

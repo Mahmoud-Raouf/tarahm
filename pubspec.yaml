@@ -10,13 +10,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^0.14.0
-  hexcolor: ^2.0.1
+  # hexcolor: ^2.0.1
   firebase_core: ^2.3.0
   firebase_auth: ^4.3.0
-  firebase_core_platform_interface: ^4.5.3
-  cloud_firestore: ^4.4.5
+  cloud_firestore: ^4.7.1
   flutter_screenutil: ^5.7.0
-  image_picker: ^0.8.5+3
+  image_picker: ^0.8.7+5
+  firebase_storage: ^11.2.1
+  mailer: ^6.0.1
 
 
 dev_dependencies:

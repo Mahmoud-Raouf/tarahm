@@ -25,7 +25,6 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
   final address = TextEditingController();
 
   Future createClinic() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
     CollectionReference userref =
         FirebaseFirestore.instance.collection('clinics');
     // CollectionReference customUsersref =

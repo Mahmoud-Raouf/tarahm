@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,7 +22,6 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   final address = TextEditingController();
 
   Future createClinic() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
     CollectionReference userref =
         FirebaseFirestore.instance.collection('doctors');
     userref.add({
