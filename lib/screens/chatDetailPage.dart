@@ -5,31 +5,54 @@ import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/models/chatMessageModel.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class ChatDetailPage extends StatefulWidget {
   const ChatDetailPage(
       {Key? key,
-      required this.documentId,
+      required this.DoctorId,
       required this.ConsultingId,
       this.chatName = "دكتور"})
       : super(key: key);
   final String ConsultingId;
-  final String documentId;
+  final String DoctorId;
   final String chatName;
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
+  final _formKey = GlobalKey<FormState>();
+
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   final messageTextController = TextEditingController();
+
   late String Useruid;
   late String Useremail;
   String rolename = "";
 
   String? messageContent;
   String? messageType;
+  final List _ratingsValue = [];
+
+  Future<void> addRating() async {
+    final docRef =
+        FirebaseFirestore.instance.collection('doctors').doc(widget.DoctorId);
+
+    // Get the current ratings value and add the new rating
+    final currentRatings =
+        await docRef.get().then((doc) => doc.get('ratings') ?? 0.0);
+    final newRatings = currentRatings + _ratingsValue;
+
+    // Add the new rating to the ratings collection
+    final ratingsRef = docRef.collection('ratings');
+    await ratingsRef.add({'value': newRatings});
+
+    // Update the doctors document with the new ratings value
+    await docRef.update({'ratings': newRatings});
+    _ratingsValue.removeAt(_ratingsValue.length - 1);
+  }
 
   @override
   void initState() {
@@ -62,6 +85,114 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     });
   }
 
+  void _showPopUp(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 600.0,
+            height: 250,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "يمكنك تقييم الدكتور الأن",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Directionality(
+                    textDirection: ui.TextDirection.rtl,
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        errorStyle: TextStyle(color: Colors.red),
+                        labelText: 'إختر تقييمك',
+                        labelStyle: TextStyle(
+                          color: Color(MyColors.yellow01),
+                        ),
+                        hintStyle: TextStyle(color: Colors.grey),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 1.0,
+                          child: Text(
+                            '1.0',
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 2.0,
+                          child: Text('2.0'),
+                        ),
+                        DropdownMenuItem(
+                          value: 3.0,
+                          child: Text('3.0'),
+                        ),
+                        DropdownMenuItem(
+                          value: 4.0,
+                          child: Text('4.0'),
+                        ),
+                        DropdownMenuItem(
+                          value: 5.0,
+                          child: Text('5.0'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _ratingsValue.add(value as double);
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please select an option';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        addRating();
+                      }
+                    },
+                    child: Text('إرسال التقييم'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(MyColors.yellow01),
+                        shadowColor: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,10 +215,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Scaffold.of(context).openDrawer();
+                          _showPopUp(
+                            context,
+                          );
                         },
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/person.jpg'),
+                        child: Text(
+                          "تقييم",
+                          style: TextStyle(
+                              fontSize: 14, color: Color(MyColors.purple01)),
                         ),
                       ),
                       Text(
@@ -118,7 +253,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             StreamBuilder<QuerySnapshot>(
                               stream: _firestore
                                   .collection('doctors')
-                                  .doc(widget.documentId)
+                                  .doc(widget.DoctorId)
                                   .collection('doctorConsulting')
                                   .doc(widget.ConsultingId)
                                   .collection('message')
@@ -251,7 +386,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               CollectionReference mainCollectionRef =
                                   FirebaseFirestore.instance
                                       .collection('doctors')
-                                      .doc(widget.documentId)
+                                      .doc(widget.DoctorId)
                                       .collection('doctorConsulting')
                                       .doc(widget.ConsultingId)
                                       .collection("message");

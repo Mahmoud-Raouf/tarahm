@@ -196,7 +196,7 @@ class _MessagesState extends State<Messages> {
                                 MaterialPageRoute(
                                   builder: (context) => ChatDetailPage(
                                       ConsultingId: Consultingid[index],
-                                      documentId: DoctorId[index],
+                                      DoctorId: DoctorId[index],
                                       chatName: doctorName!),
                                 ),
                               );

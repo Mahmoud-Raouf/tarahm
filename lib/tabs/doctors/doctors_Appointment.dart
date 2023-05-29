@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
+import 'package:medicare/screens/doctor_detail.dart';
 import 'package:medicare/styles/colors.dart';
 
 class ScheduleTabDoctors extends StatefulWidget {
@@ -122,12 +123,23 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     ),
                                     Column(
                                       children: [
-                                        Text(
-                                          name,
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            color: Color(MyColors.header01),
-                                            fontWeight: FontWeight.w700,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DoctorDetail(
+                                                          doctorId: doctorId)),
+                                            );
+                                          },
+                                          child: Text(
+                                            name,
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              color: Color(MyColors.header01),
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
                                       ],

@@ -314,7 +314,7 @@ class _DoctorConsultationRequestsState
                                                       return ChatDetailPage(
                                                           ConsultingId:
                                                               ConsultingId,
-                                                          documentId:
+                                                          DoctorId:
                                                               documentId!);
                                                     }));
                                                   },
@@ -383,7 +383,7 @@ class _DoctorConsultationRequestsState
                                                         builder: (context) {
                                                   return ChatDetailPage(
                                                     ConsultingId: ConsultingId,
-                                                    documentId: documentId!,
+                                                    DoctorId: documentId!,
                                                     chatName: customerName,
                                                   );
                                                 }));
