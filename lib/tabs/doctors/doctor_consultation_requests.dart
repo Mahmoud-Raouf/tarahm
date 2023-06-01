@@ -34,6 +34,7 @@ class _DoctorConsultationRequestsState
       .doc(documentId)
       .collection('doctorConsulting')
       .snapshots();
+
   sendEmail(String email, String messageWelcome, String content) async {
     String username = 'lujainqm1@gmail.com';
     String password = 'hlbhuckrhjunkdfe';
@@ -330,10 +331,11 @@ class _DoctorConsultationRequestsState
                                                       ElevatedButton.styleFrom(
                                                           backgroundColor:
                                                               Color.fromARGB(
-                                                                  255,
-                                                                  243,
-                                                                  33,
-                                                                  33),
+                                                            255,
+                                                            243,
+                                                            33,
+                                                            33,
+                                                          ),
                                                           shadowColor:
                                                               Colors.black),
                                                   onPressed: () {

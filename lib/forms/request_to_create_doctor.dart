@@ -20,6 +20,8 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   final name = TextEditingController();
   final numberPhone = TextEditingController();
   final address = TextEditingController();
+  final experience = TextEditingController();
+  final description = TextEditingController();
 
   Future createClinic() async {
     CollectionReference userref =
@@ -29,6 +31,8 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
       'name': name.text,
       'number_phone': numberPhone.text,
       'address': numberPhone.text,
+      'experience': experience.text,
+      'description': description.text,
       'doctors_acceptance': false,
     });
     Navigator.push(
@@ -97,6 +101,32 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
                 controller: address,
                 fontsize: 18,
                 type: TextInputType.name,
+                contentPaddinghorizontal: 20,
+                contentPaddingvertical: 10,
+                onSaved: (newValue) => newValue!,
+              ),
+              SizedBox(
+                height: 15.sp,
+              ),
+              defaultFormField(
+                borderradius: 8,
+                hintText: "عدد سنوات الخبرة",
+                controller: experience,
+                fontsize: 18,
+                type: TextInputType.number,
+                contentPaddinghorizontal: 20,
+                contentPaddingvertical: 10,
+                onSaved: (newValue) => newValue!,
+              ),
+              SizedBox(
+                height: 15.sp,
+              ),
+              defaultFormField(
+                borderradius: 8,
+                hintText: "وصف مختصر",
+                controller: description,
+                fontsize: 18,
+                type: TextInputType.text,
                 contentPaddinghorizontal: 20,
                 contentPaddingvertical: 10,
                 onSaved: (newValue) => newValue!,

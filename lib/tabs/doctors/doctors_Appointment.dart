@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/doctor_detail.dart';
 import 'package:medicare/styles/colors.dart';
@@ -30,6 +31,8 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
 
   @override
   Widget build(BuildContext context) {
+    Size ksize = MediaQuery.of(context).size;
+    ScreenUtil.init(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 30, top: 30, right: 30),
@@ -63,10 +66,13 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                 ),
                               ),
                               Spacer(),
-                              Text("طلب إستشارة",
-                                  style: TextStyle(
-                                      color: Color(MyColors.header01),
-                                      fontWeight: FontWeight.w800)),
+                              Text(
+                                "طلب إستشارة",
+                                style: TextStyle(
+                                  color: Color(MyColors.header01),
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -95,14 +101,34 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (BuildContext context, int index) {
-                        Map<String, dynamic> data = snapshot.data!.docs[index]
-                            .data() as Map<String, dynamic>;
-                        String doctorId = snapshot.data!.docs[index].id;
+                        DocumentSnapshot document = snapshot.data!.docs[index];
+                        Map<String, dynamic> data =
+                            document.data() as Map<String, dynamic>;
 
+                        String doctorId = document.id;
                         String name = data['name'];
-                        String address = data['address'];
-                        // String image = data['image'];
+                        int experience = data['experience'];
+                        int consultingCount = data['consultingCount'];
+                        List<dynamic> ratingValues =
+                            List<dynamic>.from(data['ratings']);
 
+                        int sumRatings = 0;
+                        for (dynamic ratingValue in ratingValues) {
+                          if (ratingValue is int) {
+                            sumRatings += ratingValue;
+                          } else if (ratingValue is String) {
+                            int? parsedRating = int.tryParse(ratingValue);
+                            if (parsedRating != null) {
+                              sumRatings += parsedRating;
+                            }
+                          }
+                        }
+                        double averageRating = sumRatings / ratingValues.length;
+                        double maxRating = 5.0;
+                        double rating = averageRating > maxRating
+                            ? maxRating
+                            : averageRating;
+                        int itemCount = ratingValues.length;
                         return Card(
                           child: Padding(
                             padding: EdgeInsets.all(15),
@@ -111,38 +137,25 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                               children: [
                                 Row(
                                   children: [
-                                    // CircleAvatar(
-                                    //   child: ClipOval(
-                                    //       child: Image.network(
-                                    //     image,
-                                    //     fit: BoxFit.cover,
-                                    //   )),
-                                    // ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DoctorDetail(
-                                                          doctorId: doctorId)),
-                                            );
-                                          },
-                                          child: Text(
-                                            name,
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                              color: Color(MyColors.header01),
-                                              fontWeight: FontWeight.w700,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DoctorDetail(
+                                              doctorId: doctorId,
                                             ),
                                           ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "دكتور $name",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          color: Color(MyColors.header01),
+                                          fontWeight: FontWeight.w700,
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -154,12 +167,24 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'عنوان الطبيب : $address',
-                                        textAlign: TextAlign.right,
+                                        'عدد الإستشارات: $experience',
                                         style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54,
+                                          fontSize: 12.sp,
+                                          color: Color(MyColors.grey02),
                                         ),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        'عدد سنوات الخبرة: $consultingCount',
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(MyColors.grey02),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
                                       ),
                                       Row(
                                         children: [
@@ -172,9 +197,10 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                             width: 5,
                                           ),
                                           Text(
-                                            '50 - 4.0 تقييم',
+                                            '$itemCount - ${rating.toDouble()} تقييم',
                                             style: TextStyle(
-                                                color: Color(MyColors.grey02)),
+                                              color: Color(MyColors.grey02),
+                                            ),
                                           ),
                                         ],
                                       )
@@ -221,82 +247,20 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                       },
                     );
                   } else if (snapshot.hasError) {
-                    Center(child: Text('لا يوجد عيادات'));
+                    return Center(child: Text('لا يوجد عيادات'));
                   }
                   return Center(
                     child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator()),
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DateTimeCard extends StatelessWidget {
-  const DateTimeCard({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(MyColors.bg03),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      width: double.infinity,
-      padding: EdgeInsets.all(20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text(
-                '11:00 ~ 12:10',
-                style: TextStyle(
-                  color: Color(MyColors.primary),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.access_alarm,
-                color: Color(MyColors.primary),
-                size: 17,
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                'الاحد, مارس 29',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Color(MyColors.primary),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.calendar_today,
-                color: Color(MyColors.primary),
-                size: 15,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

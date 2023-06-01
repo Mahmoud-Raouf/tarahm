@@ -12,11 +12,17 @@ class ProfileDetail extends StatefulWidget {
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
-  static String? Useruid;
+  static String? useruid;
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
   final _numberphoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static Future<void> initialize() async {
+    getCurrentUseData();
+    getCurrentUserNumberPhone();
+    getCurrentEmail();
+  }
 
   String _name = "";
   String _number = "";
@@ -44,7 +50,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
       });
     });
     setState(() {
-      Useruid = currentUser.uid;
+      useruid = currentUser.uid;
     });
   }
 
@@ -211,7 +217,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                 QuerySnapshot snapshot = await FirebaseFirestore
                                     .instance
                                     .collection('customUsers')
-                                    .where('uid', isEqualTo: Useruid)
+                                    .where('uid', isEqualTo: useruid)
                                     .get();
 
                                 FirebaseFirestore.instance

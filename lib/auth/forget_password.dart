@@ -14,16 +14,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
-
+  String success_Message = "";
+  String error_Message = "";
   void _resetPassword() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(
           email: _emailController.text,
         );
-        // Show success message to user
+        setState(() {
+          success_Message = "تم إرسال البريد بنجاح";
+        });
       } catch (e) {
-        // Show error message to user
+        setState(() {
+          error_Message = "بريد إليكترونى خاطئ";
+        });
       }
     }
   }
@@ -145,6 +150,25 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      if (success_Message != null)
+                        Text(
+                          success_Message,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      if (error_Message != null)
+                        Text(
+                          error_Message,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       SizedBox(
                         height: 30,
                       ),
