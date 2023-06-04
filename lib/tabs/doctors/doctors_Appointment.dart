@@ -43,7 +43,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
               child: Column(
                 children: [
                   Text(
-                    "شكرا لقد تم تقديم تقيمك بنجاح",
+                    "شكرا لقد تم تقديم طلب إستشارتك",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.green, fontSize: 23.sp),
                   ),
@@ -147,9 +147,10 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
 
                         String doctorId = document.id;
                         String name = data['name'];
-                        int experience = data['experience'];
+                        String experience = data['experience'];
                         int consultingCount = data['consultingCount'];
-                        List<dynamic> ratingValues =
+
+                        List<dynamic>? ratingValues =
                             List<dynamic>.from(data['ratings']);
 
                         int sumRatings = 0;
@@ -207,7 +208,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'عدد الإستشارات: $experience',
+                                        'عدد الإستشارات: $consultingCount',
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           color: Color(MyColors.grey02),
@@ -217,7 +218,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                         height: 2,
                                       ),
                                       Text(
-                                        'عدد سنوات الخبرة: $consultingCount',
+                                        'عدد سنوات الخبرة: $experience',
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           color: Color(MyColors.grey02),

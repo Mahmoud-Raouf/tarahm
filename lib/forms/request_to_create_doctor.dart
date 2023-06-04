@@ -32,6 +32,8 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
       'address': numberPhone.text,
       'experience': experience.text,
       'description': description.text,
+      'consultingCount': 0,
+      'ratings': [0],
       'doctors_acceptance': false,
     });
     Navigator.push(
