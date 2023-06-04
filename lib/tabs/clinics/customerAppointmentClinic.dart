@@ -41,7 +41,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
     final smtpServer = gmail(username, password);
 
     final message = Message()
-      ..from = Address(username, 'Your name')
+      ..from = Address(username, 'تراحم')
       ..recipients.add(email)
       ..subject = messageWelcome
       ..html = "<h1>$content</h1>";
