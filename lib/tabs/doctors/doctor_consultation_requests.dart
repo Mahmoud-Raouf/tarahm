@@ -233,7 +233,7 @@ class _DoctorConsultationRequestsState
                                               height: 5,
                                             ),
                                             Text(
-                                              "عنوان الاستشارة :$Useremail",
+                                              "عنوان الاستشارة :$content",
                                               style: TextStyle(
                                                 color: Color(MyColors.grey02),
                                                 fontSize: 14,

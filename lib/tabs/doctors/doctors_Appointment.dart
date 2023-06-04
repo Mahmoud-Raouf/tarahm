@@ -237,7 +237,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                             width: 5,
                                           ),
                                           Text(
-                                            '$itemCount - ${rating.toDouble()} تقييم',
+                                            '$itemCount - ${rating.round().toDouble()} تقييم',
                                             style: TextStyle(
                                               color: Color(MyColors.grey02),
                                             ),

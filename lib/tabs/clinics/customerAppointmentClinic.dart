@@ -240,14 +240,6 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             ),
                                           ),
                                           Text(
-                                            'الطلب مقدم من : $presonBookingId',
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          Text(
                                             'رقم الهاتف:  $numberPhone',
                                             style: TextStyle(
                                                 color: Color(MyColors.grey02)),
