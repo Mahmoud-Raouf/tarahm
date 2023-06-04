@@ -54,7 +54,6 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
 
   @override
   Widget build(BuildContext context) {
-    Size ksize = MediaQuery.of(context).size;
     ScreenUtil.init(context);
     return Scaffold(
       body: Padding(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
@@ -22,6 +23,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
   String userId = "";
   static String? documentId;
+  String Useremail = '';
 
   static Future<void> initialize() async {
     documentId = await getclinicAppointmentsDocument();
@@ -161,11 +163,29 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                             String? customerName = data['customerName'];
 
+                            String presonBookingId = data['presonbookingid'];
                             String? numberPhone = data['numberPhone'];
                             bool acceptedDate = data['acceptedDate'];
                             String? clinicName = data['clinicName'];
                             // String image = data['image'];
 
+                            Future<void> getEmail(
+                                String presonBookingId) async {
+                              getCurrentEmail(String presonBookingId) async {
+                                FirebaseAuth auth = FirebaseAuth.instance;
+                                User? user = auth.currentUser;
+                                if (user != null) {
+                                  String? email = user.email;
+                                  setState(() {
+                                    Useremail = email!;
+                                  });
+                                  return email;
+                                }
+                                return null;
+                              }
+                            }
+
+                            getEmail(presonBookingId);
                             return Card(
                               child: Padding(
                                 padding: EdgeInsets.all(15),
@@ -209,6 +229,14 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                         children: [
                                           Text(
                                             'الطلب مقدم من : $customerName',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Text(
+                                            'الطلب مقدم من : ${getEmail(presonBookingId)}',
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
                                               fontSize: 14,
@@ -265,7 +293,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      "ma7mod.raouf@gmail.com",
+                                                      Useremail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم  قبول حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
                                                     );
@@ -305,7 +333,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      "ma7mod.raouf@gmail.com",
+                                                      Useremail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم رفض حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
                                                     );

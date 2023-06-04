@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/doctor_detail.dart';
+import 'package:medicare/screens/home.dart';
 import 'package:medicare/styles/colors.dart';
 
 class ScheduleTabDoctors extends StatefulWidget {
@@ -19,6 +20,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
       .snapshots();
 
   String _name = '';
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +33,45 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
 
   @override
   Widget build(BuildContext context) {
-    Size ksize = MediaQuery.of(context).size;
+    void _showPopupMessage(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SizedBox(
+              height: 150.sp,
+              child: Column(
+                children: [
+                  Text(
+                    "شكرا لقد تم تقديم تقيمك بنجاح",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.green, fontSize: 23.sp),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(MyColors.kprimaryButtonsColor),
+                      ),
+                      child: Text(
+                        "الصفحة الرئيسية",
+                        style: TextStyle(fontSize: 12.sp),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
+                      }),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     ScreenUtil.init(context);
     return Scaffold(
       body: Padding(
@@ -238,6 +278,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     }
 
                                     doctorAppointmentschat();
+                                    _showPopupMessage(context);
                                   },
                                 ),
                               ],

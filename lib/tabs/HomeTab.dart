@@ -322,7 +322,9 @@ class _UserIntroState extends State<UserIntro> {
             Scaffold.of(context).openDrawer();
           },
           child: CircleAvatar(
-            backgroundImage: AssetImage('assets/person.jpg'),
+            backgroundImage: AssetImage(
+              'assets/trahumLogo.jpg',
+            ),
           ),
         ),
         Column(

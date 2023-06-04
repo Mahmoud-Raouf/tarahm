@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
@@ -24,6 +25,7 @@ class _DoctorConsultationRequestsState
 
   static String? documentId;
   static String? doctorName;
+  String Useremail = '';
 
   static Future<void> initialize() async {
     documentId = await getdoctorConsultingDocument();
@@ -163,13 +165,29 @@ class _DoctorConsultationRequestsState
                             String formatted = formatter.format(now);
 
                             String? customerName = data['customerName'];
+                            String ClientId = data['ClientId'];
                             // String? title = data['title'];
 
                             String? content = data['content'];
                             bool acceptedChat = data['acceptedChat'];
                             String? doctorName = data['doctorName'];
-                            // String image = data['image'];
 
+                            Future<void> getEmail(String clientId) async {
+                              getCurrentEmail(String clientId) async {
+                                FirebaseAuth auth = FirebaseAuth.instance;
+                                User? user = auth.currentUser;
+                                if (user != null) {
+                                  String? email = user.email;
+                                  setState(() {
+                                    Useremail = email!;
+                                  });
+                                  return email;
+                                }
+                                return null;
+                              }
+                            }
+
+                            getEmail(ClientId);
                             return Card(
                               child: Padding(
                                 padding: EdgeInsets.all(15),
@@ -305,7 +323,7 @@ class _DoctorConsultationRequestsState
 
                                                     consultingAccepted();
                                                     sendEmail(
-                                                      "ma7mod.raouf@gmail.com",
+                                                      Useremail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم الرد على إستشارتك من قبل دكتور $doctorName فى ${DateTime.now()}",
                                                     );
@@ -362,8 +380,8 @@ class _DoctorConsultationRequestsState
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      "ma7mod.raouf@gmail.com",
-                                                      "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
+                                                      Useremail,
+                                                      "مرحباً بك يا $customerName لديك رساله من تطبيق تراحم",
                                                       " تم رفض حجز إستشارة مع دكتور $doctorName بتاريخ ${DateTime.now()}",
                                                     );
                                                   },

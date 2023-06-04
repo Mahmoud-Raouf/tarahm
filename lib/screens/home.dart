@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 import 'package:medicare/tabs/HomeTab.dart';
@@ -14,16 +15,11 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-List<Map> navigationBarItems = [
-  {'icon': Icons.local_hospital, 'index': 0},
-  {'icon': Icons.calendar_today, 'index': 1},
-  {'icon': Icons.question_answer_outlined, 'index': 2},
-  {'icon': Icons.message_outlined, 'index': 3},
-  {'icon': Icons.person_outlined, 'index': 4},
-];
-
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
+  String rolename = "";
+
+  List<Map<String, dynamic>> navigationBarItems = [];
 
   void goToClinics() {
     setState(() {
@@ -38,17 +34,61 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    getRoleCurrentUser().then((role) {
+      setState(() {
+        rolename = role;
+        if (rolename == "user") {
+          navigationBarItems = [
+            {'icon': Icons.local_hospital, 'index': 0},
+            {'icon': Icons.calendar_today, 'index': 1},
+            {'icon': Icons.question_answer_outlined, 'index': 2},
+            {'icon': Icons.message_outlined, 'index': 3},
+            {'icon': Icons.person_outlined, 'index': 4},
+          ];
+        } else {
+          navigationBarItems = [
+            {'icon': Icons.local_hospital, 'index': 0},
+            {'icon': Icons.calendar_today, 'index': 1},
+            {'icon': Icons.question_answer_outlined, 'index': 2},
+            {'icon': Icons.person_outlined, 'index': 4},
+          ];
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<Widget> screens = [
-      HomeTab(
-        onPressedScheduleCard: goToClinics,
-        onPressedScheduleCard2: goToDoctors,
-      ),
-      ScheduleTabClinics(),
-      ScheduleTabDoctors(),
-      Messages(),
-      ProfileDetail(),
-    ];
+    List<Widget> screens = [];
+    if (rolename == "user") {
+      screens = [
+        HomeTab(
+          onPressedScheduleCard: goToClinics,
+          onPressedScheduleCard2: goToDoctors,
+        ),
+        ScheduleTabClinics(),
+        ScheduleTabDoctors(),
+        Messages(),
+        ProfileDetail(),
+      ];
+    } else {
+      screens = [
+        HomeTab(
+          onPressedScheduleCard: goToClinics,
+          onPressedScheduleCard2: goToDoctors,
+        ),
+        ScheduleTabClinics(),
+        ScheduleTabDoctors(),
+        ProfileDetail(),
+      ];
+    }
+
+    if (navigationBarItems.length < 2) {
+      return CircularProgressIndicator(); // Display a loading indicator until the items are available
+    }
 
     return Directionality(
       textDirection: TextDirection.rtl,

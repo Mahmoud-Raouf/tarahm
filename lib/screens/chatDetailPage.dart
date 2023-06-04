@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/models/chatMessageModel.dart';
 import 'package:medicare/styles/colors.dart';
@@ -36,6 +37,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   String? messageType;
   final List _ratingsValue = [];
 
+  bool ratingShow = true;
+  bool ratingShowMassage = false;
+
   Future<void> addRating() async {
     final docRef =
         FirebaseFirestore.instance.collection('doctors').doc(widget.DoctorId);
@@ -51,7 +55,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     // Update the doctors document with the new ratings value
     await docRef.update({'ratings': newRatings});
-    _ratingsValue.removeAt(_ratingsValue.length - 1);
+    if (_ratingsValue.isNotEmpty) {
+      _ratingsValue.removeAt(_ratingsValue.length - 1);
+    }
   }
 
   @override
@@ -98,91 +104,112 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "يمكنك تقييم الدكتور الأن",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Directionality(
-                    textDirection: ui.TextDirection.rtl,
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                  Visibility(
+                    visible: ratingShow,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "يمكنك تقييم الدكتور الأن",
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
+                        SizedBox(
+                          height: 20,
                         ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        errorStyle: TextStyle(color: Colors.red),
-                        labelText: 'إختر تقييمك',
-                        labelStyle: TextStyle(
-                          color: Color(MyColors.yellow01),
-                        ),
-                        hintStyle: TextStyle(color: Colors.grey),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 1.0,
-                          child: Text(
-                            '1.0',
+                        Directionality(
+                          textDirection: ui.TextDirection.rtl,
+                          child: DropdownButtonFormField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              errorStyle: TextStyle(color: Colors.red),
+                              labelText: 'إختر تقييمك',
+                              labelStyle: TextStyle(
+                                color: Color(MyColors.yellow01),
+                              ),
+                              hintStyle: TextStyle(color: Colors.grey),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 1.0,
+                                child: Text(
+                                  '1.0',
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 2.0,
+                                child: Text('2.0'),
+                              ),
+                              DropdownMenuItem(
+                                value: 3.0,
+                                child: Text('3.0'),
+                              ),
+                              DropdownMenuItem(
+                                value: 4.0,
+                                child: Text('4.0'),
+                              ),
+                              DropdownMenuItem(
+                                value: 5.0,
+                                child: Text('5.0'),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _ratingsValue.add(value as double);
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please select an option';
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                        DropdownMenuItem(
-                          value: 2.0,
-                          child: Text('2.0'),
+                        SizedBox(
+                          height: 20,
                         ),
-                        DropdownMenuItem(
-                          value: 3.0,
-                          child: Text('3.0'),
-                        ),
-                        DropdownMenuItem(
-                          value: 4.0,
-                          child: Text('4.0'),
-                        ),
-                        DropdownMenuItem(
-                          value: 5.0,
-                          child: Text('5.0'),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              addRating();
+                            }
+                            setState(() {
+                              ratingShow = false;
+                              ratingShowMassage = true;
+                            });
+                          },
+                          child: Text('إرسال التقييم'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(MyColors.yellow01),
+                              shadowColor: Colors.black),
                         ),
                       ],
-                      onChanged: (value) {
-                        setState(() {
-                          _ratingsValue.add(value as double);
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please select an option';
-                        }
-                        return null;
-                      },
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        addRating();
-                      }
-                    },
-                    child: Text('إرسال التقييم'),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(MyColors.yellow01),
-                        shadowColor: Colors.black),
+                  Visibility(
+                    visible: ratingShowMassage,
+                    child: Text(
+                      "شكرا لقد تم تقديم تقيمك بنجاح",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.green, fontSize: 25.sp),
+                    ),
                   ),
                 ],
               ),
@@ -195,6 +222,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -341,25 +369,25 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     color: Colors.white,
                     child: Row(
                       children: <Widget>[
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: Color(MyColors.bg01),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
+                        // GestureDetector(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     height: 30,
+                        //     width: 30,
+                        //     decoration: BoxDecoration(
+                        //       color: Color(MyColors.bg01),
+                        //       borderRadius: BorderRadius.circular(30),
+                        //     ),
+                        //     child: Icon(
+                        //       Icons.add,
+                        //       color: Colors.white,
+                        //       size: 20,
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   width: 15,
+                        // ),
                         Expanded(
                           child: TextField(
                             controller: messageTextController,
@@ -394,7 +422,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               Timestamp currentTimestamp =
                                   Timestamp.fromDate(now);
                               mainCollectionRef.add({
-                                'messageType': messageType,
+                                'messageType': messageType!,
                                 'text': messageContent,
                                 'time': currentTimestamp,
                               });
