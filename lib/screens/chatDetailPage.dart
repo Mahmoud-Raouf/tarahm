@@ -31,7 +31,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   late String Useruid;
   late String Useremail;
-  String rolename = "";
+  String userrole = "";
 
   String? messageContent;
   String? messageType;
@@ -69,15 +69,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       if (user != null) {
         Useruid = user.uid;
         Useremail = user.email!;
-        print("Useruid $Useruid");
-        print("Useremail $Useremail");
       }
     } catch (e) {
       print(e);
     }
     getRoleCurrentUser().then((rolename) {
       setState(() {
-        rolename = rolename;
+        userrole = rolename;
       });
       if (rolename == "doctor") {
         setState(() {
@@ -241,18 +239,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          _showPopUp(
-                            context,
-                          );
-                        },
-                        child: Text(
-                          "تقييم",
-                          style: TextStyle(
-                              fontSize: 14, color: Color(MyColors.purple01)),
+                      if (userrole == "user")
+                        InkWell(
+                          onTap: () {
+                            _showPopUp(
+                              context,
+                            );
+                          },
+                          child: Text(
+                            "تقييم",
+                            style: TextStyle(
+                                fontSize: 14, color: Color(MyColors.purple01)),
+                          ),
                         ),
-                      ),
                       Text(
                         widget.chatName,
                         style: TextStyle(

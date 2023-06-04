@@ -9,7 +9,8 @@ import 'package:medicare/styles/colors.dart';
 // }
 class defaultFormField extends StatelessWidget {
   const defaultFormField(
-      {required this.hintText,
+      {Key? key,
+      required this.hintText,
       required this.type,
       this.onSaved,
       this.controller,
@@ -19,7 +20,9 @@ class defaultFormField extends StatelessWidget {
       this.fontsize = 16,
       this.bordercolor = Colors.grey,
       this.textColor = Colors.grey,
-      this.isEye = false});
+      this.isEye = false,
+      this.validator})
+      : super(key: key);
 
   final String hintText;
   final double borderradius;
@@ -32,6 +35,7 @@ class defaultFormField extends StatelessWidget {
   final void Function(String?)? onSaved;
   final TextEditingController? controller;
   final bool isEye;
+  final String? Function(String?)? validator; // Added validator property
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,7 @@ class defaultFormField extends StatelessWidget {
       textAlign: TextAlign.right,
       cursorColor: Color(MyColors.header01),
       textDirection: TextDirection.rtl,
+      validator: validator,
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: isEye ? const Icon(Icons.remove_red_eye) : null,

@@ -172,18 +172,23 @@ class _DoctorConsultationRequestsState
                             bool acceptedChat = data['acceptedChat'];
                             String? doctorName = data['doctorName'];
 
+                            Future<String?> getCurrentEmail(
+                                String clientId) async {
+                              FirebaseAuth auth = FirebaseAuth.instance;
+                              User? user = auth.currentUser;
+                              if (user != null) {
+                                String? email = user.email;
+                                return email;
+                              }
+                              return null;
+                            }
+
                             Future<void> getEmail(String clientId) async {
-                              getCurrentEmail(String clientId) async {
-                                FirebaseAuth auth = FirebaseAuth.instance;
-                                User? user = auth.currentUser;
-                                if (user != null) {
-                                  String? email = user.email;
-                                  setState(() {
-                                    Useremail = email!;
-                                  });
-                                  return email;
-                                }
-                                return null;
+                              String? email = await getCurrentEmail(clientId);
+                              if (email != null) {
+                                setState(() {
+                                  Useremail = email;
+                                });
                               }
                             }
 
@@ -228,7 +233,7 @@ class _DoctorConsultationRequestsState
                                               height: 5,
                                             ),
                                             Text(
-                                              "عنوان الاستشارة :ConsultingId",
+                                              "عنوان الاستشارة :$Useremail",
                                               style: TextStyle(
                                                 color: Color(MyColors.grey02),
                                                 fontSize: 14,

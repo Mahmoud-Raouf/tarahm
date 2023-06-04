@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +20,7 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   final address = TextEditingController();
   final experience = TextEditingController();
   final description = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   Future createClinic() async {
     CollectionReference userref =
@@ -67,147 +66,144 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
           child: Padding(
         padding: EdgeInsets.all(20.sp),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 50.sp,
-              ),
-              Text(
-                "طلب التقديم كطبيب",
-                style: TextStyle(
-                    fontSize: 18.sp,
-                    color: Color(MyColors.text01),
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              defaultFormField(
-                borderradius: 50,
-                hintText: "الإسم ثلاثي",
-                controller: name,
-                fontsize: 18,
-                type: TextInputType.name,
-                contentPaddinghorizontal: 20,
-                contentPaddingvertical: 10,
-                onSaved: (newValue) => newValue!,
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              defaultFormField(
-                borderradius: 8,
-                hintText: "العنوان",
-                controller: address,
-                fontsize: 18,
-                type: TextInputType.name,
-                contentPaddinghorizontal: 20,
-                contentPaddingvertical: 10,
-                onSaved: (newValue) => newValue!,
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              defaultFormField(
-                borderradius: 8,
-                hintText: "عدد سنوات الخبرة",
-                controller: experience,
-                fontsize: 18,
-                type: TextInputType.number,
-                contentPaddinghorizontal: 20,
-                contentPaddingvertical: 10,
-                onSaved: (newValue) => newValue!,
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              defaultFormField(
-                borderradius: 8,
-                hintText: "وصف مختصر",
-                controller: description,
-                fontsize: 18,
-                type: TextInputType.text,
-                contentPaddinghorizontal: 20,
-                contentPaddingvertical: 10,
-                onSaved: (newValue) => newValue!,
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              defaultFormField(
-                borderradius: 8,
-                hintText: "رقم الهاتف",
-                controller: numberPhone,
-                fontsize: 18,
-                type: TextInputType.name,
-                contentPaddinghorizontal: 20,
-                contentPaddingvertical: 10,
-                onSaved: (newValue) => newValue!,
-              ),
-              SizedBox(
-                height: 15.sp,
-              ),
-              SizedBox(
-                width: ksize.width * 0.9,
-                child: IconButton(
-                  onPressed: () async {
-                    XFile? image = await imagepicker.pickImage(
-                        source: ImageSource.gallery);
-                    setState(
-                      () {
-                        if (image != null) {
-                          _image = File(image.path);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("No Image Selected")));
-                        }
-                      },
-                    );
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 50.sp,
+                ),
+                Text(
+                  "طلب التقديم كطبيب",
+                  style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Color(MyColors.text01),
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 15.sp,
+                ),
+                defaultFormField(
+                  borderradius: 50,
+                  hintText: "الإسم ثلاثي",
+                  controller: name,
+                  fontsize: 18,
+                  type: TextInputType.name,
+                  contentPaddinghorizontal: 20,
+                  contentPaddingvertical: 10,
+                  onSaved: (newValue) => newValue!,
+                ),
+                SizedBox(
+                  height: 15.sp,
+                ),
+                defaultFormField(
+                  borderradius: 8,
+                  hintText: "العنوان",
+                  controller: address,
+                  fontsize: 18,
+                  type: TextInputType.name,
+                  contentPaddinghorizontal: 20,
+                  contentPaddingvertical: 10,
+                  onSaved: (newValue) => newValue!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'هذا الحقل مطلوب';
+                    }
+
+                    return null;
                   },
-                  icon: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.camera_alt_outlined),
-                      SizedBox(
-                        width: 15,
+                ),
+                SizedBox(
+                  height: 15.sp,
+                ),
+                defaultFormField(
+                  borderradius: 8,
+                  hintText: "عدد سنوات الخبرة",
+                  controller: experience,
+                  fontsize: 18,
+                  type: TextInputType.number,
+                  contentPaddinghorizontal: 20,
+                  contentPaddingvertical: 10,
+                  onSaved: (newValue) => newValue!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'هذا الحقل مطلوب';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'لبد ان تكون القيمة رقم';
+                    }
+
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 15.sp,
+                ),
+                defaultFormField(
+                  borderradius: 8,
+                  hintText: "وصف مختصر",
+                  controller: description,
+                  fontsize: 18,
+                  type: TextInputType.text,
+                  contentPaddinghorizontal: 20,
+                  contentPaddingvertical: 10,
+                  onSaved: (newValue) => newValue!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'هذا الحقل مطلوب';
+                    }
+
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 15.sp,
+                ),
+                defaultFormField(
+                  borderradius: 8,
+                  hintText: "رقم الهاتف",
+                  controller: numberPhone,
+                  fontsize: 18,
+                  type: TextInputType.name,
+                  contentPaddinghorizontal: 20,
+                  contentPaddingvertical: 10,
+                  onSaved: (newValue) => newValue!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'هذا الحقل مطلوب';
+                    }
+
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 50.sp,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      createClinic();
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(colors: const [
+                          Color.fromRGBO(23, 128, 4, 1),
+                          Color.fromRGBO(51, 223, 0, .6),
+                        ])),
+                    child: Center(
+                      child: Text(
+                        "تقديم الطلب",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      Text("إدخل صورتك الشخصية")
-                    ],
-                  ),
-                ),
-              ),
-              _image != null
-                  ? Image.file(
-                      _image,
-                      width: 100,
-                      height: 100,
-                    )
-                  : SizedBox(
-                      width: 0,
-                    ),
-              SizedBox(
-                height: 50.sp,
-              ),
-              GestureDetector(
-                onTap: createClinic,
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(colors: const [
-                        Color.fromRGBO(23, 128, 4, 1),
-                        Color.fromRGBO(51, 223, 0, .6),
-                      ])),
-                  child: Center(
-                    child: Text(
-                      "تقديم الطلب",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       )),

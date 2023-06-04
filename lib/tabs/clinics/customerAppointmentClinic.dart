@@ -169,19 +169,23 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                             String? clinicName = data['clinicName'];
                             // String image = data['image'];
 
-                            Future<void> getEmail(
+                            Future<String?> getCurrentEmail(
                                 String presonBookingId) async {
-                              getCurrentEmail(String presonBookingId) async {
-                                FirebaseAuth auth = FirebaseAuth.instance;
-                                User? user = auth.currentUser;
-                                if (user != null) {
-                                  String? email = user.email;
-                                  setState(() {
-                                    Useremail = email!;
-                                  });
-                                  return email;
-                                }
-                                return null;
+                              FirebaseAuth auth = FirebaseAuth.instance;
+                              User? user = auth.currentUser;
+                              if (user != null) {
+                                String? email = user.email;
+                                return email;
+                              }
+                              return null;
+                            }
+
+                            Future<void> getEmail(String clientId) async {
+                              String? email = await getCurrentEmail(clientId);
+                              if (email != null) {
+                                setState(() {
+                                  Useremail = email;
+                                });
                               }
                             }
 
@@ -236,7 +240,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             ),
                                           ),
                                           Text(
-                                            'الطلب مقدم من : ${getEmail(presonBookingId)}',
+                                            'الطلب مقدم من : $presonBookingId',
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
                                               fontSize: 14,
