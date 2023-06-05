@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:medicare/controller/firebase_data.dart';
-import 'package:medicare/models/clinicsData.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:medicare/styles/colors.dart';
 
@@ -22,36 +20,8 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
       .where('clinic_acceptance', isEqualTo: false)
       .snapshots();
 
-  String userId = "";
-
-  Future<void> updateDocumentRole() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('customUsers')
-        .where('uid', isEqualTo: userId)
-        .get();
-
-    await FirebaseFirestore.instance
-        .collection('customUsers')
-        .doc(snapshot.docs[0].id)
-        .update({'role': 'clinic'});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrentUserUid().then((uid) {
-      setState(() {
-        userId = uid;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<Map> filteredSchedules = schedules.where((var schedule) {
-      return schedule['request'] == false;
-    }).toList();
-
     return SafeArea(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -127,6 +97,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                             String mytitle = data['title'];
                             String numberPhone = data['number_phone'];
                             String address = data['address'];
+                            String userId = data['userId'];
                             // String image = data['image'];
                             String documentId = snapshot.data!.docs[index].id;
 
@@ -213,6 +184,25 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                                     .update({
                                                   'clinic_acceptance': true,
                                                 });
+                                                Future<void>
+                                                    updateDocumentRole() async {
+                                                  QuerySnapshot snapshot =
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              'customUsers')
+                                                          .where('uid',
+                                                              isEqualTo: userId)
+                                                          .get();
+
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('customUsers')
+                                                      .doc(snapshot.docs[0].id)
+                                                      .update(
+                                                          {'role': 'clinic'});
+                                                }
+
                                                 updateDocumentRole();
                                               }
 

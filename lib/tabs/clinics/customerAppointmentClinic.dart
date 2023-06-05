@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
 import 'package:medicare/controller/firebase_data.dart';
+import 'package:medicare/controller/sendEmail.dart';
 import 'package:medicare/screens/NavBar.dart';
 import 'package:intl/intl.dart';
 import 'package:medicare/styles/colors.dart';
@@ -34,28 +33,6 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
       .doc(documentId)
       .collection('clinicAppointments')
       .snapshots();
-
-  sendEmail(String email, String messageWelcome, String content) async {
-    String username = 'lujainqm1@gmail.com';
-    String password = 'hlbhuckrhjunkdfe';
-    final smtpServer = gmail(username, password);
-
-    final message = Message()
-      ..from = Address(username, 'تراحم')
-      ..recipients.add(email)
-      ..subject = messageWelcome
-      ..html = "<h1>$content</h1>";
-
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
-      print('Message not sent.');
-      for (var p in e.problems) {
-        print('Problem: ${p.code}: ${p.msg}');
-      }
-    }
-  }
 
   @override
   void initState() {
