@@ -283,6 +283,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   .collection('doctorConsulting')
                                   .doc(widget.ConsultingId)
                                   .collection('message')
+                                  .orderBy('time', descending: false)
                                   .snapshots(),
                               builder: (context, snapshot) {
                                 List<ChatMessage> messagesWidgets = [];

@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  Future signUp() async {
+  Future<void> signUp() async {
     bool passwordConfirmed() {
       if (_passwordController.text.trim() ==
           _confirmPasswordController.text.trim()) {
@@ -31,26 +31,90 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    CollectionReference userref =
+    CollectionReference userRef =
         FirebaseFirestore.instance.collection('customUsers');
-    if (passwordConfirmed()) {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
+
+    // Check if the email already exists
+    bool emailExists = false;
+    QuerySnapshot snapshot = await userRef
+        .where('email', isEqualTo: _emailController.text.trim())
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      emailExists = true;
+    }
+
+    if (passwordConfirmed() && !emailExists) {
+      try {
+        UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-      userref.add({
-        "uid": result.user?.uid,
-        'name': _nameController.text,
-        'number': _numberphoneController.text,
-        'role': "user",
-      });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
+          password: _passwordController.text.trim(),
+        );
+
+        await userRef.add({
+          "uid": result.user?.uid,
+          'name': _nameController.text,
+          'number': _numberphoneController.text,
+          'role': "user",
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      } catch (e) {
+        String errorMessage = "";
+        if (e is FirebaseAuthException) {
+          errorMessage = e.message ?? "An error occurred during sign up.";
+        } else {
+          errorMessage = "An error occurred during sign up.";
+        }
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: Text("خطأ"),
+                content: Text("هذا البريد تم إستخدامة من قبل"),
+                actions: [
+                  TextButton(
+                    child: Text("إغلاق"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }
     } else {
-      setState(() {
-        errorvisible = true;
-      });
+      String errorMessage = !passwordConfirmed()
+          ? "Passwords do not match."
+          : "Email already exists.";
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: AlertDialog(
+              title: Text("خطأ"),
+              content: Text(errorMessage),
+              actions: [
+                TextButton(
+                  child: Text("إغلاق"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
     }
   }
 
