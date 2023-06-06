@@ -160,23 +160,31 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                         List<dynamic>? ratingValues =
                             List<dynamic>.from(data['ratings']);
 
+                        int sunItemCount = ratingValues.length;
+
                         int sumRatings = 0;
-                        for (dynamic ratingValue in ratingValues) {
+                        int itemCount = 0;
+
+                        for (var ratingValue in ratingValues) {
                           if (ratingValue is int) {
                             sumRatings += ratingValue;
+                            itemCount++;
                           } else if (ratingValue is String) {
                             int? parsedRating = int.tryParse(ratingValue);
                             if (parsedRating != null) {
                               sumRatings += parsedRating;
+                              itemCount++;
                             }
                           }
                         }
-                        double averageRating = sumRatings / ratingValues.length;
+
+                        double averageRating =
+                            itemCount != 0 ? sumRatings / itemCount : 0;
                         double maxRating = 5.0;
                         double rating = averageRating > maxRating
                             ? maxRating
                             : averageRating;
-                        int itemCount = ratingValues.length;
+
                         return Card(
                           child: Padding(
                             padding: EdgeInsets.all(15),
@@ -214,13 +222,6 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'عدد الإستشارات: $consultingCount',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Color(MyColors.grey02),
-                                        ),
-                                      ),
                                       SizedBox(
                                         height: 2,
                                       ),
@@ -245,7 +246,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                             width: 5,
                                           ),
                                           Text(
-                                            '$itemCount - ${rating.toDouble()} تقييم',
+                                            '$sunItemCount - ${rating.toDouble()} تقييم',
                                             style: TextStyle(
                                               color: Color(MyColors.grey02),
                                             ),
