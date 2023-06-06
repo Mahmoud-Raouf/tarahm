@@ -29,7 +29,7 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
       "userId": currentUser.uid,
       'name': name.text,
       'number_phone': numberPhone.text,
-      'address': numberPhone.text,
+      'address': address.text,
       'experience': experience.text,
       'description': description.text,
       'consultingCount': 0,

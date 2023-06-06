@@ -155,7 +155,6 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                         String doctorId = document.id;
                         String name = data['name'];
                         String experience = data['experience'];
-                        int consultingCount = data['consultingCount'];
 
                         List<dynamic>? ratingValues =
                             List<dynamic>.from(data['ratings']);

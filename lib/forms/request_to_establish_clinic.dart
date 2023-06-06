@@ -31,7 +31,7 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
       "userId": currentUser.uid,
       'title': title.text,
       'number_phone': numberPhone.text,
-      'address': numberPhone.text,
+      'address': address.text,
       'clinic_acceptance': false,
     });
     // customUsersref.add({

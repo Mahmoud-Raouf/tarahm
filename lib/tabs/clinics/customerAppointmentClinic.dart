@@ -210,7 +210,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'الطلب مقدم من : $customerName',
+                                            'الطلب مقدم من: $customerName',
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
                                               fontSize: 14,
@@ -218,7 +218,12 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                                             ),
                                           ),
                                           Text(
-                                            'رقم الهاتف:  $numberPhone',
+                                            'رقم الهاتف: $numberPhone',
+                                            style: TextStyle(
+                                                color: Color(MyColors.grey02)),
+                                          ),
+                                          Text(
+                                            'البريد: $ueerMail',
                                             style: TextStyle(
                                                 color: Color(MyColors.grey02)),
                                           ),
