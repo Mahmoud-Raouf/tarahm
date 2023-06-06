@@ -32,10 +32,10 @@ class _ProfileDetailState extends State<ProfileDetail> {
   String? numberContent = "";
   String? emailContent = "";
 
-  Future<void> updateEmail(String emailContent) async {
-    User? user = _auth.currentUser;
-    await user?.updateEmail(emailContent);
-  }
+  // Future<void> updateEmail(String emailContent) async {
+  //   User? user = _auth.currentUser;
+  //   await user?.updateEmail(emailContent);
+  // }
 
   @override
   void initState() {
@@ -142,31 +142,31 @@ class _ProfileDetailState extends State<ProfileDetail> {
                               ),
                               child: Column(
                                 children: <Widget>[
-                                  Container(
-                                    height: 64,
-                                    padding: EdgeInsets.only(right: 12.0),
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(color: Colors.grey),
-                                      ),
-                                    ),
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        emailContent = value;
-                                      },
-                                      controller: _emailController,
-                                      textAlign: TextAlign.right,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText:
-                                            'بريدك الاليكترونى : ${currentUser.email}',
-                                        hintStyle: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   height: 64,
+                                  //   padding: EdgeInsets.only(right: 12.0),
+                                  //   decoration: BoxDecoration(
+                                  //     border: Border(
+                                  //       bottom: BorderSide(color: Colors.grey),
+                                  //     ),
+                                  //   ),
+                                  //   child: TextField(
+                                  //     onChanged: (value) {
+                                  //       emailContent = value;
+                                  //     },
+                                  //     controller: _emailController,
+                                  //     textAlign: TextAlign.right,
+                                  //     decoration: InputDecoration(
+                                  //       border: InputBorder.none,
+                                  //       hintText:
+                                  //           'بريدك الاليكترونى : ${currentUser.email}',
+                                  //       hintStyle: TextStyle(
+                                  //         fontSize: 16,
+                                  //         color: Colors.grey[400],
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Container(
                                     height: 64,
                                     padding: EdgeInsets.only(right: 12.0),
@@ -251,10 +251,10 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                   });
                                 }
 
-                                if (emailContent != null &&
-                                    emailContent!.isNotEmpty) {
-                                  updateEmail(emailContent!);
-                                }
+                                // if (emailContent != null &&
+                                //     emailContent!.isNotEmpty) {
+                                //   updateEmail(emailContent!);
+                                // }
                                 if (nameContent != null &&
                                     nameContent!.isNotEmpty) {
                                   updateNameProfile();

@@ -21,6 +21,7 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
   final timesofwork = TextEditingController();
   final address = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String userId = "";
 
   Future createClinic() async {
     CollectionReference userref =
@@ -28,7 +29,7 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
     // CollectionReference customUsersref =
     //     FirebaseFirestore.instance.collection('customUsers');
     userref.add({
-      "userId": currentUser.uid,
+      "userId": userId,
       'title': title.text,
       'number_phone': numberPhone.text,
       'address': address.text,
@@ -55,6 +56,11 @@ class _RequestToEstablishClinicState extends State<RequestToEstablishClinic> {
   void initState() {
     imagepicker = ImagePicker();
     super.initState();
+    getCurrentUserUid().then((uid) {
+      setState(() {
+        userId = uid;
+      });
+    });
   }
 
   @override

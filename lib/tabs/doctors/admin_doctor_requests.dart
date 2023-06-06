@@ -20,6 +20,8 @@ class _AdminrequestsState extends State<Adminrequests> {
 
   @override
   Widget build(BuildContext context) {
+    Size ksize = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -56,7 +58,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 140,
+                                  width: ksize.width * 0.26,
                                 ),
                                 Text("طلبات الانضمام للأطباء",
                                     style: TextStyle(
@@ -165,7 +167,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         SizedBox(
-                                          width: 140,
+                                          width: ksize.width * 0.3,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
@@ -208,7 +210,7 @@ class _AdminrequestsState extends State<Adminrequests> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 140,
+                                          width: ksize.width * 0.3,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.red[400],

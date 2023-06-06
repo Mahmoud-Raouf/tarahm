@@ -22,6 +22,8 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
 
   @override
   Widget build(BuildContext context) {
+    Size ksize = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -58,7 +60,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 140,
+                                  width: ksize.width * 0.26,
                                 ),
                                 Text("طلبات الانضمام للعيادات",
                                     style: TextStyle(
@@ -166,7 +168,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         SizedBox(
-                                          width: 140,
+                                          width: ksize.width * 0.3,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
@@ -211,7 +213,7 @@ class _ClinicsRequestsState extends State<ClinicsRequests> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 140,
+                                          width: ksize.width * 0.3,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.red[500],

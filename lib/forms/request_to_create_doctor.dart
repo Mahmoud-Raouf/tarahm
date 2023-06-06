@@ -21,12 +21,13 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   final experience = TextEditingController();
   final description = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String userId = "";
 
   Future createClinic() async {
     CollectionReference userref =
         FirebaseFirestore.instance.collection('doctors');
     userref.add({
-      "userId": currentUser.uid,
+      "userId": userId,
       'name': name.text,
       'number_phone': numberPhone.text,
       'address': address.text,
@@ -49,6 +50,11 @@ class _RequestToCreateDoctorState extends State<RequestToCreateDoctor> {
   void initState() {
     imagepicker = ImagePicker();
     super.initState();
+    getCurrentUserUid().then((uid) {
+      setState(() {
+        userId = uid;
+      });
+    });
   }
 
   @override
