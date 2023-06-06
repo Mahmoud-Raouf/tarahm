@@ -297,7 +297,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
                                     DateTime now = message.get("time").toDate();
                                     DateFormat formatter =
-                                        DateFormat.yMd().add_jm();
+                                        DateFormat.yMd().add_Hms();
                                     String messageTime = formatter.format(now);
 
                                     messagesWidgets.add(
@@ -310,44 +310,47 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   }
                                 }
 
-                                return Column(
-                                  children: messagesWidgets.map((message) {
-                                    return Align(
-                                      alignment:
-                                          (message.messageType == "sender"
-                                              ? Alignment.topRight
-                                              : Alignment.topLeft),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: (message.messageType ==
-                                                      "sender"
-                                                  ? Colors.grey.shade200
-                                                  : Color(MyColors.bg01)),
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 70.sp),
+                                  child: Column(
+                                    children: messagesWidgets.map((message) {
+                                      return Align(
+                                        alignment:
+                                            (message.messageType == "sender"
+                                                ? Alignment.topRight
+                                                : Alignment.topLeft),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: (message.messageType ==
+                                                        "sender"
+                                                    ? Colors.grey.shade200
+                                                    : Color(MyColors.bg01)),
+                                              ),
+                                              padding: EdgeInsets.all(16),
+                                              child: Text(
+                                                message.messageContent,
+                                                style: TextStyle(fontSize: 15),
+                                              ),
                                             ),
-                                            padding: EdgeInsets.all(16),
-                                            child: Text(
-                                              message.messageContent,
-                                              style: TextStyle(fontSize: 15),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: Text(
+                                                message.messageTime,
+                                                textAlign: TextAlign.right,
+                                              ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 10),
-                                            child: Text(
-                                              message.messageTime,
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
                                 );
                               },
                             ),
