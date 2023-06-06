@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medicare/controller/firebase_data.dart';
@@ -20,6 +21,7 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
       .snapshots();
 
   String _name = '';
+  final String _uemail = '';
 
   @override
   void initState() {
@@ -27,6 +29,11 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
     getCurrentUseData().then((name) {
       setState(() {
         _name = name;
+      });
+    });
+    getCurrentEmail().then((uemail) {
+      setState(() {
+        _name = uemail;
       });
     });
   }
@@ -261,24 +268,42 @@ class _ScheduleTabDoctorsState extends State<ScheduleTabDoctors> {
                                     DateTime now = DateTime.now();
                                     DateTime date =
                                         DateTime(now.year, now.month, now.day);
-                                    Future doctorAppointmentschat() async {
-                                      CollectionReference mainCollectionRef =
-                                          FirebaseFirestore.instance
-                                              .collection('doctors')
-                                              .doc(doctorId)
-                                              .collection('doctorConsulting');
 
-                                      mainCollectionRef.add({
-                                        'acceptedChat': false,
-                                        'customerName': _name,
-                                        'date': date,
-                                        'content': "من فضلك أريد إستشارة",
-                                        'ClientId': currentUser.uid,
-                                        'doctorName': name,
-                                      });
+                                    Future<void>
+                                        doctorAppointmentsChat() async {
+                                      try {
+                                        final FirebaseAuth auth =
+                                            FirebaseAuth.instance;
+                                        final User? currentUser =
+                                            auth.currentUser;
+                                        final String? userEmail =
+                                            currentUser?.email;
+
+                                        CollectionReference mainCollectionRef =
+                                            FirebaseFirestore.instance
+                                                .collection('doctors')
+                                                .doc(doctorId)
+                                                .collection('doctorConsulting');
+
+                                        await mainCollectionRef.add({
+                                          'acceptedChat': false,
+                                          'customerName': _name,
+                                          'date': date,
+                                          'content': "من فضلك أريد إستشارة",
+                                          'ClientId': currentUser?.uid,
+                                          'doctorName': name,
+                                          'ueerMail': userEmail,
+                                        });
+
+                                        print(
+                                            'Appointment chat added successfully.');
+                                      } catch (e) {
+                                        print(
+                                            'Error adding appointment chat: $e');
+                                      }
                                     }
 
-                                    doctorAppointmentschat();
+                                    doctorAppointmentsChat();
                                     _showPopupMessage(context);
                                   },
                                 ),

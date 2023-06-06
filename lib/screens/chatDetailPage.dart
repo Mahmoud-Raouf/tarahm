@@ -24,6 +24,7 @@ class ChatDetailPage extends StatefulWidget {
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
@@ -38,7 +39,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final List _ratingsValue = [];
 
   bool ratingShow = true;
-  bool ratingShowMassage = false;
+  bool showRatingMassage = false;
 
   Future<void> addRating() async {
     final docRef =
@@ -48,10 +49,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     final currentRatings =
         await docRef.get().then((doc) => doc.get('ratings') ?? 0.0);
     final newRatings = currentRatings + _ratingsValue;
-
-    // Add the new rating to the ratings collection
-    final ratingsRef = docRef.collection('ratings');
-    await ratingsRef.add({'value': newRatings});
 
     // Update the doctors document with the new ratings value
     await docRef.update({'ratings': newRatings});
@@ -89,138 +86,140 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     });
   }
 
-  void _showPopUp(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            width: 600.0,
-            height: 250,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Visibility(
-                    visible: ratingShow,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "يمكنك تقييم الدكتور الأن",
-                          style: TextStyle(color: Colors.black, fontSize: 18),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Directionality(
-                          textDirection: ui.TextDirection.rtl,
-                          child: DropdownButtonFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.blue),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              errorStyle: TextStyle(color: Colors.red),
-                              labelText: 'إختر تقييمك',
-                              labelStyle: TextStyle(
-                                color: Color(MyColors.yellow01),
-                              ),
-                              hintStyle: TextStyle(color: Colors.grey),
-                              fillColor: Colors.white,
-                              filled: true,
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 1.0,
-                                child: Text(
-                                  '1.0',
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: 2.0,
-                                child: Text('2.0'),
-                              ),
-                              DropdownMenuItem(
-                                value: 3.0,
-                                child: Text('3.0'),
-                              ),
-                              DropdownMenuItem(
-                                value: 4.0,
-                                child: Text('4.0'),
-                              ),
-                              DropdownMenuItem(
-                                value: 5.0,
-                                child: Text('5.0'),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                _ratingsValue.add(value as double);
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select an option';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              addRating();
-                            }
-                            setState(() {
-                              ratingShow = false;
-                              ratingShowMassage = true;
-                            });
-                          },
-                          child: Text('إرسال التقييم'),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(MyColors.yellow01),
-                              shadowColor: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: ratingShowMassage,
-                    child: Text(
-                      "شكرا لقد تم تقديم تقيمك بنجاح",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green, fontSize: 25.sp),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
+    void _showPopUp(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SizedBox(
+              width: 600.0,
+              height: 250,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Visibility(
+                      visible: ratingShow,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "يمكنك تقييم الدكتور الأن",
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Directionality(
+                            textDirection: ui.TextDirection.rtl,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blue),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                errorStyle: TextStyle(color: Colors.red),
+                                labelText: 'إختر تقييمك',
+                                labelStyle: TextStyle(
+                                  color: Color(MyColors.yellow01),
+                                ),
+                                hintStyle: TextStyle(color: Colors.grey),
+                                fillColor: Colors.white,
+                                filled: true,
+                              ),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 1.0,
+                                  child: Text(
+                                    '1.0',
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: 2.0,
+                                  child: Text('2.0'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 3.0,
+                                  child: Text('3.0'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 4.0,
+                                  child: Text('4.0'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 5.0,
+                                  child: Text('5.0'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _ratingsValue.add(value as double);
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please select an option';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                addRating();
+                                Navigator.pop(context);
+
+                                setState(() {
+                                  ratingShow = false;
+                                  showRatingMassage = true;
+                                });
+                              }
+                            },
+                            child: Text('إرسال التقييم'),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(MyColors.yellow01),
+                                shadowColor: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: showRatingMassage,
+                      child: Text(
+                        "شكرا لقد تم تقديم تقيمك بنجاح",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.green, fontSize: 25.sp),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Padding(

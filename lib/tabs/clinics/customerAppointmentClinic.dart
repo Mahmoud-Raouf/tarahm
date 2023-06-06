@@ -145,6 +145,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
                             bool acceptedDate = data['acceptedDate'];
                             String? clinicName = data['clinicName'];
                             // String image = data['image'];
+                            String ueerMail = data['ueerMail'];
 
                             Future<String?> getCurrentEmail(
                                 String presonBookingId) async {
@@ -266,7 +267,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      Useremail,
+                                                      ueerMail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم  قبول حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
                                                     );
@@ -306,7 +307,7 @@ class _customerAppointmentClinicState extends State<customerAppointmentClinic> {
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      Useremail,
+                                                      ueerMail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم رفض حجز موعد فى عيادة $clinicName بتاريخ ${DateTime.now()}",
                                                     );

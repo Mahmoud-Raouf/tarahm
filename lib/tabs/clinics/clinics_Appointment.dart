@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicare/controller/firebase_data.dart';
 import 'package:medicare/styles/colors.dart';
@@ -220,22 +221,34 @@ class _ScheduleTabClinicsState extends State<ScheduleTabClinics> {
                                             );
                                             Future
                                                 clinicAppointmentsAccepted() async {
-                                              CollectionReference
-                                                  mainCollectionRef =
-                                                  FirebaseFirestore.instance
-                                                      .collection('clinics')
-                                                      .doc(ClinicId)
-                                                      .collection(
-                                                          'clinicAppointments');
+                                              try {
+                                                final FirebaseAuth auth =
+                                                    FirebaseAuth.instance;
+                                                final User? currentUser =
+                                                    auth.currentUser;
+                                                final String? userEmail =
+                                                    currentUser?.email;
+                                                CollectionReference
+                                                    mainCollectionRef =
+                                                    FirebaseFirestore.instance
+                                                        .collection('clinics')
+                                                        .doc(ClinicId)
+                                                        .collection(
+                                                            'clinicAppointments');
 
-                                              mainCollectionRef.add({
-                                                'acceptedDate': false,
-                                                'customerName': nameuser,
-                                                'date': _selectedDate,
-                                                'numberPhone': numberuser,
-                                                'presonbookingid': Useruid,
-                                                "clinicName": mytitle
-                                              });
+                                                mainCollectionRef.add({
+                                                  'acceptedDate': false,
+                                                  'customerName': nameuser,
+                                                  'date': _selectedDate,
+                                                  'numberPhone': numberuser,
+                                                  'presonbookingid': Useruid,
+                                                  "clinicName": mytitle,
+                                                  'ueerMail': userEmail,
+                                                });
+                                              } catch (e) {
+                                                print(
+                                                    'Error adding appointment chat: $e');
+                                              }
                                             }
 
                                             // Update the selected date

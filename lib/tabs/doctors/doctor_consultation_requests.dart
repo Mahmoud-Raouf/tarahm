@@ -148,6 +148,7 @@ class _DoctorConsultationRequestsState
                             String? content = data['content'];
                             bool acceptedChat = data['acceptedChat'];
                             String? doctorName = data['doctorName'];
+                            String ueerMail = data['ueerMail'];
 
                             Future<String?> getCurrentEmail(
                                 String clientId) async {
@@ -211,6 +212,15 @@ class _DoctorConsultationRequestsState
                                             ),
                                             Text(
                                               "عنوان الاستشارة :$content",
+                                              style: TextStyle(
+                                                color: Color(MyColors.grey02),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              textAlign: TextAlign.right,
+                                            ),
+                                            Text(
+                                              "البريد الاليكترونى \n :$ueerMail",
                                               style: TextStyle(
                                                 color: Color(MyColors.grey02),
                                                 fontSize: 14,
@@ -305,7 +315,7 @@ class _DoctorConsultationRequestsState
 
                                                     consultingAccepted();
                                                     sendEmail(
-                                                      Useremail,
+                                                      ueerMail,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم الرد على إستشارتك من قبل دكتور $doctorName فى ${DateTime.now()}",
                                                     );
@@ -362,7 +372,7 @@ class _DoctorConsultationRequestsState
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      Useremail,
+                                                      ueerMail,
                                                       "مرحباً بك يا $customerName لديك رساله من تطبيق تراحم",
                                                       " تم رفض حجز إستشارة مع دكتور $doctorName بتاريخ ${DateTime.now()}",
                                                     );
