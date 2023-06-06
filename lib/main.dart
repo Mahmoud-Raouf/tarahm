@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'trahum',
       builder: fixTextScale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

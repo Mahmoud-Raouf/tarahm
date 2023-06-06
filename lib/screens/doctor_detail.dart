@@ -55,8 +55,8 @@ class _DetailBodyState extends State<DetailBody> {
   String _doctorNumberPhone = "";
   String _doctorAddress = "";
   String _doctorDescription = "";
-  double _doctorRatings = 0;
-  int _doctorExperience = 0;
+  List<dynamic> _doctorRatings = [0];
+  String _doctorExperience = "0";
   int _doctorConsultingCount = 0;
 
   Future<void> fetchDocument() async {
@@ -103,18 +103,8 @@ class _DetailBodyState extends State<DetailBody> {
           Row(
             children: [
               NumberCard(
-                label: 'مرضى',
-                value: '$_doctorConsultingCount +',
-              ),
-              SizedBox(width: 15),
-              NumberCard(
                 label: 'خبرة',
                 value: ' $_doctorExperience  سنة  ',
-              ),
-              SizedBox(width: 15),
-              NumberCard(
-                label: 'تقييم',
-                value: '$_doctorRatings',
               ),
             ],
           ),

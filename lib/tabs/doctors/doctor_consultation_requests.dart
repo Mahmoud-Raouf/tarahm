@@ -148,7 +148,7 @@ class _DoctorConsultationRequestsState
                             String? content = data['content'];
                             bool acceptedChat = data['acceptedChat'];
                             String? doctorName = data['doctorName'];
-                            String ueerMail = data['ueerMail'];
+                            String? ueerMail = data['ueerMail'];
 
                             Future<String?> getCurrentEmail(
                                 String clientId) async {
@@ -315,7 +315,7 @@ class _DoctorConsultationRequestsState
 
                                                     consultingAccepted();
                                                     sendEmail(
-                                                      ueerMail,
+                                                      ueerMail!,
                                                       "مرحباً بك يا :: $customerName لديك رساله من تطبيق تراحم",
                                                       " تم الرد على إستشارتك من قبل دكتور $doctorName فى ${DateTime.now()}",
                                                     );
@@ -372,7 +372,7 @@ class _DoctorConsultationRequestsState
 
                                                     clinicAppointmentsAccepted();
                                                     sendEmail(
-                                                      ueerMail,
+                                                      ueerMail!,
                                                       "مرحباً بك يا $customerName لديك رساله من تطبيق تراحم",
                                                       " تم رفض حجز إستشارة مع دكتور $doctorName بتاريخ ${DateTime.now()}",
                                                     );
