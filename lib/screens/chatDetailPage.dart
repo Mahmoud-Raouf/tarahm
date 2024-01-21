@@ -9,11 +9,7 @@ import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
 class ChatDetailPage extends StatefulWidget {
-  const ChatDetailPage(
-      {Key? key,
-      required this.DoctorId,
-      required this.ConsultingId,
-      this.chatName = "دكتور"})
+  const ChatDetailPage({Key? key, required this.DoctorId, required this.ConsultingId, this.chatName = "دكتور"})
       : super(key: key);
   final String ConsultingId;
   final String DoctorId;
@@ -42,12 +38,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   bool showRatingMassage = false;
 
   Future<void> addRating() async {
-    final docRef =
-        FirebaseFirestore.instance.collection('doctors').doc(widget.DoctorId);
+    final docRef = FirebaseFirestore.instance.collection('doctors').doc(widget.DoctorId);
 
     // Get the current ratings value and add the new rating
-    final currentRatings =
-        await docRef.get().then((doc) => doc.get('ratings') ?? 0.0);
+    final currentRatings = await docRef.get().then((doc) => doc.get('ratings') ?? 0.0);
     final newRatings = currentRatings + _ratingsValue;
 
     // Update the doctors document with the new ratings value
@@ -120,8 +114,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.blue),
@@ -132,8 +125,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
+                                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                 errorStyle: TextStyle(color: Colors.red),
                                 labelText: 'إختر تقييمك',
                                 labelStyle: TextStyle(
@@ -197,8 +189,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             },
                             child: Text('إرسال التقييم'),
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(MyColors.yellow01),
-                                shadowColor: Colors.black),
+                                backgroundColor: Color(MyColors.yellow01), shadowColor: Colors.black),
                           ),
                         ],
                       ),
@@ -247,21 +238,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           },
                           child: Text(
                             "تقييم",
-                            style: TextStyle(
-                                fontSize: 14, color: Color(MyColors.purple01)),
+                            style: TextStyle(fontSize: 14, color: Color(MyColors.purple01)),
                           ),
                         ),
                       Text(
                         widget.chatName,
-                        style: TextStyle(
-                            fontSize: 18, color: Color(MyColors.yellow02)),
+                        style: TextStyle(fontSize: 18, color: Color(MyColors.yellow02)),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Text(
                           "رجوع",
-                          style: TextStyle(
-                              fontSize: 14, color: Color(MyColors.purple01)),
+                          style: TextStyle(fontSize: 14, color: Color(MyColors.purple01)),
                         ),
                       ),
                     ],
@@ -292,12 +280,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 if (messages != null) {
                                   for (var message in messages) {
                                     final messageText = message.get('text');
-                                    final messageType =
-                                        message.get("messageType");
+                                    final messageType = message.get("messageType");
 
                                     DateTime now = message.get("time").toDate();
-                                    DateFormat formatter =
-                                        DateFormat.yMd().add_Hms();
+                                    DateFormat formatter = DateFormat.yMd().add_jm();
                                     String messageTime = formatter.format(now);
 
                                     messagesWidgets.add(
@@ -310,47 +296,38 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   }
                                 }
 
-                                return Padding(
-                                  padding: EdgeInsets.only(bottom: 70.sp),
-                                  child: Column(
-                                    children: messagesWidgets.map((message) {
-                                      return Align(
-                                        alignment:
-                                            (message.messageType == "sender"
-                                                ? Alignment.topRight
-                                                : Alignment.topLeft),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: (message.messageType ==
-                                                        "sender"
-                                                    ? Colors.grey.shade200
-                                                    : Color(MyColors.bg01)),
-                                              ),
-                                              padding: EdgeInsets.all(16),
-                                              child: Text(
-                                                message.messageContent,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
+                                return Column(
+                                  children: messagesWidgets.map((message) {
+                                    return Align(
+                                      alignment:
+                                          (message.messageType == "sender" ? Alignment.topRight : Alignment.topLeft),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: (message.messageType == "sender"
+                                                  ? Colors.grey.shade200
+                                                  : Color(MyColors.bg01)),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10),
-                                              child: Text(
-                                                message.messageTime,
-                                                textAlign: TextAlign.right,
-                                              ),
+                                            padding: EdgeInsets.all(16),
+                                            child: Text(
+                                              message.messageContent,
+                                              style: TextStyle(fontSize: 15),
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 10),
+                                            child: Text(
+                                              message.messageTime,
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
                                 );
                               },
                             ),
@@ -413,16 +390,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           onPressed: () {
                             messageTextController.clear();
                             Future doctorAppointmentschat() async {
-                              CollectionReference mainCollectionRef =
-                                  FirebaseFirestore.instance
-                                      .collection('doctors')
-                                      .doc(widget.DoctorId)
-                                      .collection('doctorConsulting')
-                                      .doc(widget.ConsultingId)
-                                      .collection("message");
+                              CollectionReference mainCollectionRef = FirebaseFirestore.instance
+                                  .collection('doctors')
+                                  .doc(widget.DoctorId)
+                                  .collection('doctorConsulting')
+                                  .doc(widget.ConsultingId)
+                                  .collection("message");
                               DateTime now = DateTime.now();
-                              Timestamp currentTimestamp =
-                                  Timestamp.fromDate(now);
+                              Timestamp currentTimestamp = Timestamp.fromDate(now);
                               mainCollectionRef.add({
                                 'messageType': messageType!,
                                 'text': messageContent,

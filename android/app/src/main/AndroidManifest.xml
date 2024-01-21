@@ -9,7 +9,7 @@
     </intent>
   </queries>
    <application
-        android:label="medicare"
+        android:label="تراحم"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
